@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>گزارش چالش‌ها و ارورهای Hashcat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: #161b22;
+            padding: 40px 45px;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #f0883e;
+            border-right: 5px solid #f0883e;
+            padding-right: 15px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-right: 20px;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 15px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #21262d;
+            color: #58a6ff;
+            font-size: 13px;
+            padding: 5px 16px;
+            border-radius: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .badge.red {
+            color: #f85149;
+            border-color: #da3633;
+        }
+        .badge.orange {
+            color: #f0883e;
+            border-color: #d29922;
+        }
+        .badge.green {
+            color: #3fb950;
+            border-color: #2ea043;
+        }
+
+        .section {
+            margin-top: 30px;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 25px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #f0e6d0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 .emoji {
+            font-size: 26px;
+        }
+
+        p, li {
+            line-height: 1.9;
+            color: #c9d1d9;
+            font-size: 15px;
+        }
+
+        ul {
+            padding-right: 25px;
+            margin-top: 8px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+
+        .code-box {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #f0883e;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .code-box .comment {
+            color: #8b949e;
+        }
+        .code-box .highlight {
+            color: #58a6ff;
+        }
+        .code-box .error {
+            color: #f85149;
+        }
+
+        .error-box {
+            background: #2d0f0f;
+            border-right: 5px solid #f85149;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+        .error-box strong {
+            color: #f85149;
+        }
+
+        .success-box {
+            background: #0f2d1f;
+            border-right: 5px solid #2ea043;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+        .success-box strong {
+            color: #3fb950;
+        }
+
+        .warning-box {
+            background: #2d1f0f;
+            border-right: 5px solid #d29922;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+        .warning-box strong {
+            color: #e3b341;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        .step-num {
+            background: #21262d;
+            color: #58a6ff;
+            font-weight: bold;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            border: 1px solid #30363d;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content p {
+            margin: 0 0 6px 0;
+        }
+
+        .footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #21262d;
+            text-align: center;
+            font-size: 14px;
+            color: #8b949e;
+        }
+        .footer strong {
+            color: #f0883e;
+        }
+
+        @media (max-width: 550px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- هدر -->
+    <span class="badge red">📅 تاریخ: ۲۷ مرداد ۱۴۰۵</span>
+    <span class="badge orange" style="margin-right:10px;">⚠️ چالش‌ها: ۴</span>
+    <span class="badge green" style="margin-right:10px;">✅ راه‌حل نهایی: پیدا شد</span>
+
+    <h1>🧨 گزارش چالش‌ها و ارورهای Hashcat</h1>
+    <div class="subtitle">همه‌ی مشکلات، خطاها و تلاش‌های انجام‌شده برای کرک هش رمز عبور</div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۱: مقدمه -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🎯</span> ۱. هدف</h2>
+        <p>
+            هدف اصلی، کرک کردن هش رمز عبور ادمین بود که از دیتابیس استخراج شده بود:
+        </p>
+        <div class="code-box">
+0192023a7bbd73250516f069df18b500
+        </div>
+        <p>
+            برای این کار از ابزار <strong>hashcat</strong> استفاده شد، اما در این مسیر با چندین چالش و ارور مواجه شدیم که در ادامه مستند شده‌اند.
+        </p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۲: چالش اول - مشکل نصب Hashcat -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">📥</span> ۲. چالش اول: مشکل نصب Hashcat</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>دستور اولیه:</strong></p>
+                <div class="code-box">
+sudo apt install hashcat -y
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>ارور دریافت‌شده:</strong></p>
+                <div class="error-box">
+                    <strong>❌ 403 Forbidden</strong>
+                    <div class="code-box" style="margin-top:6px;">
+Failed to fetch https://http.kali.org/kali/pool/main/h/hashcat/hashcat-data_7.1.2%2bds1-4_all.deb
+Temporary failure resolving 'http.kali.org'
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> سرورهای پیش‌فرض کالی (<code>http.kali.org</code>) در دسترس نبودند.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>راه‌حل:</strong> تغییر ریپازیتوری به <code>archive.kali.org</code></p>
+                <div class="code-box">
+<span class="comment"># nano /etc/apt/sources.list</span>
+deb http://archive.kali.org/kali kali-rolling main non-free contrib
+deb-src http://archive.kali.org/kali kali-rolling main non-free contrib
+                </div>
+                <div class="code-box">
+sudo apt update
+sudo apt install hashcat -y
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ نتیجه:</strong> hashcat با موفقیت نصب شد.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۳: چالش دوم - خطای GPU و حافظه -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🖥️</span> ۳. چالش دوم: خطای GPU و حافظه</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>دستور اجرا شده:</strong></p>
+                <div class="code-box">
+hashcat -m 0 -a 0 admin.hash /usr/share/wordlists/rockyou.txt
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>ارور دریافت‌شده:</strong></p>
+                <div class="error-box">
+                    <strong>❌ Not enough allocatable device memory</strong>
+                    <div class="code-box" style="margin-top:6px;">
+Watchdog: Temperature abort trigger set to 90c
+Initializing backend runtime for device #1. Please be patient...
+* Device #1: Not enough allocatable device memory or free host memory for mapping.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> hashcat تلاش کرد از GPU استفاده کند، اما حافظه‌ی کافی در دسترس نبود.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>تلاش برای رفع:</strong></p>
+                <ul>
+                    <li>استفاده از پارامتر <code>--force</code> برای اجبار به اجرا</li>
+                    <li>استفاده از پارامتر <code>-D 1</code> برای استفاده از CPU به‌جای GPU</li>
+                </ul>
+                <div class="code-box">
+hashcat -m 0 -a 0 admin.hash /usr/share/wordlists/rockyou.txt --force -D 1
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ نتیجه:</strong> با این تغییرات، hashcat اجرا شد اما همچنان با مشکل حافظه مواجه بود و به‌درستی کار نکرد.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۴: چالش سوم - Segmentation Fault -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">💥</span> ۴. چالش سوم: خطای Segmentation Fault</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>دستور اجرا شده:</strong></p>
+                <div class="code-box">
+hashcat -m 0 -a 3 admin.hash ?l?l?l?l?l?l --force
+                </div>
+                <p>این دستور برای حمله‌ی Brute-Force با ۶ حرف کوچک استفاده شد.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>ارور دریافت‌شده:</strong></p>
+                <div class="error-box">
+                    <strong>❌ Segmentation Fault</strong>
+                    <div class="code-box" style="margin-top:6px;">
+zsh: segmentation fault  hashcat -m 0 -a 3 admin.hash ?l?l?l?l?l?l --force
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> بار سنگین محاسباتی Brute-Force (همه‌ی حالت‌های ۶ حرفی) باعث کرش hashcat شد.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>تلاش برای رفع:</strong></p>
+                <ul>
+                    <li>استفاده از دیکشنری کوچک‌تر (به‌جای rockyou.txt)</li>
+                    <li>استفاده از حالت بهینه‌شده (<code>-O</code>)</li>
+                </ul>
+                <div class="code-box">
+hashcat -m 0 -a 0 admin.hash small.txt --force -O
+                </div>
+                <p>اما همچنان با محدودیت حافظه مواجه بود.</p>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ نتیجه:</strong> hashcat به دلیل محدودیت‌های سخت‌افزاری (حافظه و GPU) نتوانست اجرا شود و از روش جایگزین استفاده گردید.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۵: چالش چهارم - خطای ۴۰۴ در دانلود مستقیم -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">📥</span> ۵. چالش چهارم: خطای ۴۰۴ در دانلود مستقیم</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>دستور اجرا شده:</strong></p>
+                <div class="code-box">
+wget https://github.com/hashcat/hashcat/releases/latest/download/hashcat.zip
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>ارور دریافت‌شده:</strong></p>
+                <div class="error-box">
+                    <strong>❌ 404 Not Found</strong>
+                    <div class="code-box" style="margin-top:6px;">
+HTTP request sent, awaiting response... 404 Not Found
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> لینک مستقیم دانلود از گیت‌هاب تغییر کرده بود یا فایل در آن آدرس وجود نداشت.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>راه‌حل:</strong> استفاده از روش جایگزین (CrackStation) برای کرک هش.</p>
+                <ul>
+                    <li>رفتن به سایت <code>https://crackstation.net</code></li>
+                    <li>چسباندن هش و دریافت نتیجه</li>
+                </ul>
+                <div class="success-box">
+                    <strong>✅ نتیجه:</strong> رمز عبور <code>admin123</code> با موفقیت پیدا شد.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۶: جمع‌بندی چالش‌ها -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">📋</span> ۶. جمع‌بندی چالش‌های Hashcat</h2>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:12px;direction:ltr;text-align:left;">
+            <thead>
+                <tr style="border-bottom:2px solid #30363d;">
+                    <th style="padding:8px 12px;color:#8b949e;">ردیف</th>
+                    <th style="padding:8px 12px;color:#8b949e;">چالش</th>
+                    <th style="padding:8px 12px;color:#8b949e;">ارور</th>
+                    <th style="padding:8px 12px;color:#8b949e;">راه‌حل</th>
+                    <th style="padding:8px 12px;color:#8b949e;">نتیجه</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #21262d;">
+                    <td style="padding:10px 12px;color:#c9d1d9;">۱</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">نصب Hashcat</td>
+                    <td style="padding:10px 12px;color:#f85149;">403 Forbidden</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">تغییر ریپازیتوری به archive.kali.org</td>
+                    <td style="padding:10px 12px;color:#3fb950;">✅ موفق</td>
+                </tr>
+                <tr style="border-bottom:1px solid #21262d;">
+                    <td style="padding:10px 12px;color:#c9d1d9;">۲</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">اجرا با GPU</td>
+                    <td style="padding:10px 12px;color:#f85149;">Not enough memory</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">استفاده از --force -D 1</td>
+                    <td style="padding:10px 12px;color:#d29922;">⚠️ ناقص</td>
+                </tr>
+                <tr style="border-bottom:1px solid #21262d;">
+                    <td style="padding:10px 12px;color:#c9d1d9;">۳</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">Brute-Force</td>
+                    <td style="padding:10px 12px;color:#f85149;">Segmentation Fault</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">استفاده از دیکشنری کوچک‌تر</td>
+                    <td style="padding:10px 12px;color:#d29922;">⚠️ ناقص</td>
+                </tr>
+                <tr style="border-bottom:1px solid #21262d;">
+                    <td style="padding:10px 12px;color:#c9d1d9;">۴</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">دانلود مستقیم</td>
+                    <td style="padding:10px 12px;color:#f85149;">404 Not Found</td>
+                    <td style="padding:10px 12px;color:#c9d1d9;">استفاده از CrackStation</td>
+                    <td style="padding:10px 12px;color:#3fb950;">✅ موفق</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="success-box" style="margin-top:18px;">
+            <strong>🎯 نتیجه نهایی:</strong>
+            با وجود تمام چالش‌ها، رمز عبور ادمین (<code>admin123</code>) با استفاده از روش جایگزین (CrackStation) پیدا شد.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- فوتر -->
+    <!-- ============================================ -->
+    <div class="footer">
+        تهیه‌شده توسط <strong>مریم</strong> — در مسیر یادگیری هک و امنیت وب 💻🔥
+        <br />
+        <span style="font-size:13px; color:#6e7681;">
+            ابزارهای استفاده‌شده: Kali Linux, Hashcat, CrackStation
+        </span>
+    </div>
+
+</div>
+
+</body>
+</html>

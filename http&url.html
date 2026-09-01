@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>مرجع URL و HTTP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg: #0b0d10;
+  --bg-panel: #12151a;
+  --bg-panel-2: #171b21;
+  --line: #262b33;
+  --text: #d7dbe0;
+  --text-dim: #838d99;
+  --red: #ff4d4f;
+  --red-dim: #7a2426;
+  --green: #3fd68a;
+  --blue: #5aa9ff;
+  --amber: #ffb454;
+  --purple: #b784ff;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg); scroll-behavior:smooth;}
+body{
+  font-family:'Vazirmatn', sans-serif;
+  color:var(--text);
+  line-height:1.9;
+  padding:0 0 80px 0;
+}
+
+.mono{font-family:'JetBrains Mono', monospace; direction:ltr; unicode-bidi:isolate;}
+
+/* header */
+.hero{
+  padding:64px 24px 40px;
+  max-width:920px;
+  margin:0 auto;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.hero-tag{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  display:inline-block;
+  color:var(--red);
+  font-size:13px;
+  letter-spacing:1px;
+  border:1px solid var(--red-dim);
+  background:rgba(255,77,79,0.06);
+  padding:4px 10px;
+  border-radius:4px;
+  margin-bottom:18px;
+}
+.hero h1{
+  font-size:34px;
+  font-weight:800;
+  margin:0 0 10px;
+  color:#fff;
+}
+.hero p{
+  color:var(--text-dim);
+  font-size:16px;
+  max-width:660px;
+  margin:0;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  left:24px; top:64px;
+  width:180px; height:180px;
+  background: radial-gradient(circle, rgba(255,77,79,0.12), transparent 70%);
+  pointer-events:none;
+}
+
+/* nav pills */
+.nav{
+  max-width:920px;
+  margin:24px auto 0;
+  padding:0 24px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  background:rgba(11,13,16,0.9);
+  backdrop-filter:blur(6px);
+  z-index:10;
+  padding-top:12px;
+  padding-bottom:12px;
+}
+.nav a{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:12px;
+  color:var(--text-dim);
+  text-decoration:none;
+  border:1px solid var(--line);
+  padding:5px 10px;
+  border-radius:20px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.nav a:hover{ color:var(--red); border-color:var(--red-dim); }
+
+main{
+  max-width:920px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+section{ margin-top:56px; scroll-margin-top:70px; }
+
+.section-title{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:22px;
+}
+.section-title .num{
+  font-family:'JetBrains Mono', monospace;
+  color:var(--red-dim);
+  font-size:14px;
+}
+.section-title h2{
+  font-size:13px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  margin:0;
+  font-weight:600;
+}
+
+/* heading style: bold, red, code style, with English title */
+.heading{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  display:inline-block;
+  font-weight:700;
+  color:var(--red);
+  background:rgba(255,77,79,0.08);
+  border:1px solid var(--red-dim);
+  padding:3px 10px;
+  border-radius:5px;
+  font-size:15px;
+  margin-bottom:10px;
+}
+
+.card{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 22px 24px;
+  margin-bottom:16px;
+}
+.card p{ margin:8px 0 0; font-size:15.5px; }
+.card p.note{
+  color:var(--text-dim);
+  font-size:14px;
+  border-right:2px solid var(--line);
+  padding-right:12px;
+  margin-top:14px;
+}
+
+.badge{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  display:inline-block;
+  font-size:12px;
+  padding:2px 8px;
+  border-radius:4px;
+  margin-inline-start:8px;
+  vertical-align:middle;
+}
+.badge.safe{ background:rgba(63,214,138,0.12); color:var(--green); border:1px solid rgba(63,214,138,0.3); }
+.badge.unsafe{ background:rgba(255,77,79,0.12); color:var(--red); border:1px solid var(--red-dim); }
+
+/* status grid */
+.status-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.status-row{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:16px;
+  align-items:start;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:16px 18px;
+}
+.status-code{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-weight:800;
+  font-size:22px;
+  text-align:center;
+  border-radius:8px;
+  padding:8px 0;
+}
+.status-code.c1{ color:var(--amber); background:rgba(255,180,84,0.08); }
+.status-code.c2{ color:var(--green); background:rgba(63,214,138,0.08); }
+.status-code.c3{ color:var(--blue); background:rgba(90,169,255,0.08); }
+.status-code.c4{ color:var(--red); background:rgba(255,77,79,0.08); }
+.status-code.c5{ color:var(--purple); background:rgba(183,132,255,0.08); }
+
+.status-body .name{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-weight:700;
+  color:#fff;
+  font-size:14px;
+  margin-bottom:4px;
+}
+.status-body p{ margin:0; font-size:14.5px; color:var(--text); }
+
+.divider{
+  border:none;
+  border-top:1px dashed var(--line);
+  margin:56px 0 0;
+}
+
+.callout{
+  background:linear-gradient(135deg, rgba(255,77,79,0.10), rgba(255,77,79,0.02));
+  border:1px solid var(--red-dim);
+  border-radius:10px;
+  padding:18px 20px;
+  margin-top:18px;
+}
+.callout .heading{ margin-bottom:8px; }
+.callout p{ margin:6px 0 0; font-size:15px; }
+
+/* url anatomy strip */
+.url-strip{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px;
+  font-size:15px;
+  overflow-x:auto;
+  white-space:nowrap;
+  margin-bottom:20px;
+}
+.url-strip .scheme{color:var(--amber);}
+.url-strip .userinfo{color:var(--purple);}
+.url-strip .host{color:var(--green);}
+.url-strip .port{color:var(--blue);}
+.url-strip .path{color:#fff;}
+.url-strip .params{color:var(--text-dim);}
+.url-strip .query{color:var(--red);}
+.url-strip .frag{color:var(--text-dim);}
+
+table.legend{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:24px;
+  font-size:14.5px;
+}
+table.legend th, table.legend td{
+  text-align:right;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+table.legend th{
+  color:var(--text-dim);
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-weight:600;
+}
+table.legend td.key{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.scheme-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.scheme-row{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:16px 18px;
+}
+.scheme-row .ex{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  color:var(--text-dim);
+  font-size:13px;
+  margin-top:8px;
+  display:block;
+  word-break:break-all;
+}
+
+.flow{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px;
+  font-size:14px;
+  color:var(--text-dim);
+  margin-top:16px;
+  line-height:2;
+}
+.flow b{ color:var(--red); }
+
+footer{
+  max-width:920px;
+  margin:64px auto 0;
+  padding:20px 24px 0;
+  border-top:1px solid var(--line);
+  color:var(--text-dim);
+  font-size:13px;
+  text-align:center;
+}
+
+@media (max-width:600px){
+  .hero{padding:48px 18px 32px;}
+  .hero h1{font-size:26px;}
+  .status-row{grid-template-columns:64px 1fr; padding:12px;}
+  .status-code{font-size:16px; padding:6px 0;}
+  .nav{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-tag">// URL & HTTP PROTOCOL NOTES</span>
+  <h1>مرجع کامل URL و HTTP</h1>
+  <p>خلاصه‌ی عملی از ساختار URL، پروتکل‌ها، متدهای درخواست و کدهای وضعیت پاسخ — همراه با مثال‌های واقعی، برای تمرین روی OWASP Juice Shop.</p>
+</div>
+
+<div class="nav">
+  <a href="#url-syntax">URL Syntax</a>
+  <a href="#url-relative">Relative URLs</a>
+  <a href="#schemes">Schemes</a>
+  <a href="#message">Message</a>
+  <a href="#methods">Methods</a>
+  <a href="#s1xx">1xx</a>
+  <a href="#s2xx">2xx</a>
+  <a href="#s3xx">3xx</a>
+  <a href="#s4xx">4xx</a>
+  <a href="#s5xx">5xx</a>
+  <a href="#headers">Headers</a>
+  <a href="#smuggling">Smuggling</a>
+</div>
+
+<main>
+
+<section id="url-syntax">
+  <div class="section-title"><span class="num">§1</span><h2>URL Syntax</h2></div>
+
+  <div class="url-strip">
+<span class="scheme">http</span>://<span class="userinfo">user:pass@</span><span class="host">www.joes-hardware.com</span>:<span class="port">80</span><span class="path">/hammers</span><span class="params">;sale=false</span><span class="query">?item=12731</span><span class="frag">#drills</span>
+  </div>
+
+  <table class="legend">
+    <tr><th>بخش</th><th>توضیح</th></tr>
+    <tr><td class="key">scheme</td><td>پروتکل مورد استفاده — http, ftp, mailto و...</td></tr>
+    <tr><td class="key">user:password</td><td>اطلاعات ورود، مثلاً برای FTP</td></tr>
+    <tr><td class="key">host</td><td>دامنه یا آی‌پی سروری که منبع رویش است</td></tr>
+    <tr><td class="key">port</td><td>پورت شنیداری سرور — پیش‌فرض HTTP برابر ۸۰ است</td></tr>
+    <tr><td class="key">path</td><td>محل منبع روی سرور، شبیه مسیر فایل‌سیستم</td></tr>
+    <tr><td class="key">params</td><td>پارامترهای هر بخش از مسیر، جدا با «;»</td></tr>
+    <tr><td class="key">query</td><td>پارامترهایی برای اپلیکیشن‌های gateway، بعد از «?»</td></tr>
+    <tr><td class="key">frag</td><td>اشاره به بخشی داخل منبع؛ هرگز به سرور فرستاده نمی‌شود</td></tr>
+  </table>
+
+  <div class="card">
+    <div class="heading">Escape Encoding</div>
+    <p>چون URLها باید از پروتکل‌های مختلف به‌سلامت عبور کنند و برای انسان هم خوانا باشند، کاراکترهای ناامن با علامت درصد کدگذاری می‌شوند — مثلاً فاصله می‌شود <span class="mono">%20</span> و خود علامت درصد می‌شود <span class="mono">%25</span>. کاراکترهایی مثل <span class="mono">/ ? # ; :</span> هم چون معنای خاصی دارند، رزرو شده‌اند.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="url-relative">
+  <div class="section-title"><span class="num">§2</span><h2>Relative & Absolute URLs</h2></div>
+
+  <div class="card">
+    <div class="heading">Base URL</div>
+    <p>URL نسبی به‌تنهایی ناقص است؛ برای کامل‌شدن باید نسبت به یک <span class="mono">base URL</span> تفسیر شود. مثلاً اگر در صفحه‌ی <span class="mono">tools.html</span> یک لینک به <span class="mono">./hammers.html</span> باشد، مرورگر scheme و host را از همان صفحه قرض می‌گیرد.</p>
+  </div>
+
+  <div class="flow">
+1. Path: <b>./hammers.html</b>  |  Base: <b>http://www.joes-hardware.com/tools.html</b>
+2. scheme خالی است  →  از base به ارث می‌رود: http
+3. host/port خالی است  →  از base به ارث می‌رود: www.joes-hardware.com
+4. ترکیب نهایی  →  <b>http://www.joes-hardware.com/hammers.html</b>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="schemes">
+  <div class="section-title"><span class="num">§3</span><h2>A Sea of Schemes</h2></div>
+
+  <div class="scheme-grid">
+    <div class="scheme-row">
+      <div class="heading">http / https</div>
+      <p>پروتکل استاندارد وب. https همان http است با رمزنگاری SSL و پورت پیش‌فرض ۴۴۳.</p>
+      <span class="ex">https://www.joes-hardware.com/secure.html</span>
+    </div>
+    <div class="scheme-row">
+      <div class="heading">mailto</div>
+      <p>اشاره به آدرس ایمیل، نه یک منبع قابل‌دسترسی مستقیم.</p>
+      <span class="ex">mailto:joe@joes-hardware.com</span>
+    </div>
+    <div class="scheme-row">
+      <div class="heading">ftp</div>
+      <p>آپلود، دانلود و مشاهده‌ی فهرست فایل‌ها روی یک سرور FTP.</p>
+      <span class="ex">ftp://anonymous:pass@prep.ai.mit.edu:21/pub/gnu/</span>
+    </div>
+    <div class="scheme-row">
+      <div class="heading">file</div>
+      <p>فایل‌های محلی روی یک دستگاه یا فایل‌سیستم شبکه.</p>
+      <span class="ex">file://OFFICE-FS/policies/casual-fridays.doc</span>
+    </div>
+    <div class="scheme-row">
+      <div class="heading">news</div>
+      <p>دسترسی به گروه‌های خبری Usenet؛ به‌تنهایی کافی نیست، برنامه باید سرور NNTP را از قبل بداند.</p>
+      <span class="ex">news:rec.arts.startrek</span>
+    </div>
+    <div class="scheme-row">
+      <div class="heading">telnet</div>
+      <p>دسترسی تعاملی و از راه دور به یک سیستم.</p>
+      <span class="ex">telnet://slurp:webhound@joes-hardware.com:23/</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="message">
+  <div class="section-title"><span class="num">§4</span><h2>HTTP Message Structure</h2></div>
+
+  <div class="card">
+    <div class="heading">CRLF</div>
+    <p>هر خط در پیام HTTP با دو کاراکتر تمام می‌شود: Carriage Return و Line Feed، که به‌اختصار CRLF نامیده می‌شود. برنامه‌های قدرتمند باید حالتی که فقط LF فرستاده می‌شود را هم بپذیرند.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">Body</div>
+    <p>بدنه‌ی پیام، برخلاف خط شروع و هدرها، اختیاری است و می‌تواند متن، داده‌ی باینری یا خالی باشد. هدر <span class="mono">Content-Type</span> نوع بدنه را مشخص می‌کند و <span class="mono">Content-Length</span> اندازه‌ی آن را بر حسب بایت.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="methods">
+  <div class="section-title"><span class="num">§5</span><h2>HTTP Methods</h2></div>
+
+  <div class="card">
+    <div class="heading">GET</div>
+    <span class="badge safe">safe</span>
+    <p>پرکاربردترین متد. فقط می‌گه «این منبع رو برام بفرست» — قرار نیست هیچ اتفاقی رو سرور بیفته. هر سروری که HTTP/1.1 رو ساپورت کنه، مجبوره این متد رو داشته باشه.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">HEAD</div>
+    <span class="badge safe">safe</span>
+    <p>دقیقاً مثل GET، ولی سرور فقط هدرها رو برمی‌گردونه، بدون بدنه. برای چک کردن وجود یا تغییر یک منبع، بدون دانلود کامل آن.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">PUT</div>
+    <span class="badge unsafe">unsafe</span>
+    <p>برعکس GET — می‌نویسه، نه می‌خونه. بدنه‌ی درخواست رو می‌گیره و یا سند جدیدی می‌سازه یا سند موجود رو جایگزین می‌کنه. معمولاً نیاز به احراز هویت دارد.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">POST</div>
+    <span class="badge unsafe">unsafe</span>
+    <p>برای فرستادن داده به سرور، معمولاً از فرم‌های HTML. داده به یک برنامه‌ی سمت سرور فرستاده می‌شود تا پردازش شود.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">TRACE</div>
+    <p>یک ابزار تشخیصی — سرور همان درخواستی را که دریافت کرده، عیناً در بدنه‌ی پاسخ برمی‌گرداند تا مشخص شود پروکسی‌ها یا فایروال‌ها چیزی را تغییر داده‌اند یا نه.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">OPTIONS</div>
+    <p>از سرور می‌پرسد «چه متدهایی را پشتیبانی می‌کنی؟» — به‌صورت کلی یا برای یک منبع خاص.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">DELETE</div>
+    <span class="badge unsafe">unsafe</span>
+    <p>درخواست حذف یک منبع. نکته: تضمینی نیست که حذف واقعاً انجام شود — طبق مشخصات HTTP، سرور می‌تواند بدون اطلاع، این درخواست را نادیده بگیرد.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="s1xx">
+  <div class="section-title"><span class="num">§6</span><h2>Status Codes — 1xx Informational</h2></div>
+
+  <div class="status-grid">
+    <div class="status-row">
+      <div class="status-code c1">100</div>
+      <div class="status-body">
+        <div class="name">Continue</div>
+        <p>کلاینت قبل از فرستادن یک بدنه‌ی بزرگ، از سرور تأیید می‌گیرد که آماده‌ی دریافت است — با هدر Expect: 100-continue.</p>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c1">101</div>
+      <div class="status-body">
+        <div class="name">Switching Protocols</div>
+        <p>سرور می‌گوید در حال تغییر پروتکل است، طبق چیزی که کلاینت در هدر Upgrade خواسته — مثلاً ارتقا به WebSocket.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="s2xx">
+  <div class="section-title"><span class="num">§7</span><h2>Status Codes — 2xx Success</h2></div>
+
+  <div class="status-grid">
+    <div class="status-row">
+      <div class="status-code c2">200</div>
+      <div class="status-body"><div class="name">OK</div><p>درخواست موفق بود، بدنه‌ی پاسخ همان چیزی است که خواسته شده.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">201</div>
+      <div class="status-body"><div class="name">Created</div><p>یک منبع جدید روی سرور ساخته شد. سرور باید پیش از ارسال این کد، واقعاً آن را ساخته باشد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">202</div>
+      <div class="status-body"><div class="name">Accepted</div><p>درخواست پذیرفته شد، اما هنوز پردازش نشده — و تضمینی هم برای تکمیل آن وجود ندارد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">203</div>
+      <div class="status-body"><div class="name">Non-Authoritative Information</div><p>اطلاعات هدرها از یک کپی واسطه آمده، نه مستقیم از سرور اصلی.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">204</div>
+      <div class="status-body"><div class="name">No Content</div><p>پاسخ هدر دارد ولی بدنه ندارد — مثلاً بعد از ثبت یک فرم بدون تغییر صفحه.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">205</div>
+      <div class="status-body"><div class="name">Reset Content</div><p>به مرورگر می‌گوید فیلدهای فرم فعلی را پاک کند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c2">206</div>
+      <div class="status-body"><div class="name">Partial Content</div><p>یک درخواست بازه‌ای (Range) موفق بود — پایه‌ی استریم ویدیو و دانلود قابل‌ادامه.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="s3xx">
+  <div class="section-title"><span class="num">§8</span><h2>Status Codes — 3xx Redirection</h2></div>
+
+  <div class="status-grid">
+    <div class="status-row">
+      <div class="status-code c3">300</div>
+      <div class="status-body"><div class="name">Multiple Choices</div><p>آدرس به چند نسخه از یک منبع اشاره می‌کند (مثلاً چند زبان)؛ سرور فهرستی از گزینه‌ها برمی‌گرداند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c3">301</div>
+      <div class="status-body"><div class="name">Moved Permanently</div><p>منبع برای همیشه جابه‌جا شده؛ آدرس جدید در هدر Location است.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c3">302</div>
+      <div class="status-body"><div class="name">Found</div><p>جابه‌جایی موقت — درخواست‌های بعدی همچنان باید از آدرس قدیمی استفاده کنند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c3">304</div>
+      <div class="status-body"><div class="name">Not Modified</div><p>نسخه‌ی محلی کلاینت هنوز معتبر است؛ سرور محتوایی نمی‌فرستد.</p></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="heading">302 vs 303 vs 307</div>
+    <p>در HTTP/1.0، مرورگرها بعد از دریافت 302 روی یک درخواست POST، ریدایرکت را با GET دنبال می‌کردند — یعنی نوع درخواست عوض می‌شد. HTTP/1.1 برای رفع این ابهام، کد 303 را برای همین رفتار صریح اضافه کرد، و 307 را برای ریدایرکت موقت بدون تغییر نوع درخواست. نتیجه: سرور باید نسخه‌ی HTTP کلاینت را بداند تا کد درست را انتخاب کند.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="s4xx">
+  <div class="section-title"><span class="num">§9</span><h2>Status Codes — 4xx Client Error</h2></div>
+
+  <div class="status-grid">
+    <div class="status-row">
+      <div class="status-code c4">400</div>
+      <div class="status-body"><div class="name">Bad Request</div><p>درخواست کلاینت بدفرم بوده — سرور اصلاً نتونسته درکش کنه.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">401</div>
+      <div class="status-body"><div class="name">Unauthorized</div><p>باید قبل از دسترسی به این منبع، احراز هویت کنی.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">402</div>
+      <div class="status-body"><div class="name">Payment Required</div><p>فعلاً استفاده نمی‌شود؛ برای آینده کنار گذاشته شده.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">403</div>
+      <div class="status-body"><div class="name">Forbidden</div><p>سرور درخواست را رد کرده. معمولاً دلیل رد را نمی‌گوید تا اطلاعات اضافه لو نرود.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">404</div>
+      <div class="status-body"><div class="name">Not Found</div><p>همون خطای معروف. سرور آدرس درخواستی را نمی‌شناسد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">405</div>
+      <div class="status-body"><div class="name">Method Not Allowed</div><p>متد استفاده‌شده برای این آدرس مجاز نیست؛ هدر Allow متدهای مجاز را نشان می‌دهد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">406</div>
+      <div class="status-body"><div class="name">Not Acceptable</div><p>هیچ نسخه‌ای از منبع، با ترجیحات Accept کلاینت مطابقت ندارد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">407</div>
+      <div class="status-body"><div class="name">Proxy Authentication Required</div><p>مثل 401، ولی برای پروکسی‌ای که نیاز به احراز هویت دارد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">408</div>
+      <div class="status-body"><div class="name">Request Timeout</div><p>کلاینت خیلی طول داده تا درخواستش را کامل کند؛ سرور اتصال را بسته است.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">409</div>
+      <div class="status-body"><div class="name">Conflict</div><p>این درخواست با وضعیت فعلی منبع تداخل دارد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">410</div>
+      <div class="status-body"><div class="name">Gone</div><p>شبیه 404، با این فرق که سرور می‌داند این منبع قبلاً بوده و عمداً حذف شده — معمولاً هنگام نگهداری سایت استفاده می‌شود.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">411</div>
+      <div class="status-body"><div class="name">Length Required</div><p>سرور نیاز دارد درخواست حتماً هدر Content-Length داشته باشد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">412</div>
+      <div class="status-body"><div class="name">Precondition Failed</div><p>یکی از شرط‌های درخواست شرطی برقرار نبوده.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">413</div>
+      <div class="status-body"><div class="name">Request Entity Too Large</div><p>بدنه‌ی درخواست بزرگ‌تر از چیزی است که سرور می‌تواند پردازش کند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">414</div>
+      <div class="status-body"><div class="name">Request URI Too Long</div><p>آدرس درخواستی طولانی‌تر از حدی است که سرور قبول می‌کند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">415</div>
+      <div class="status-body"><div class="name">Unsupported Media Type</div><p>سرور نوع محتوای فرستاده‌شده را نمی‌فهمد یا پشتیبانی نمی‌کند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">416</div>
+      <div class="status-body"><div class="name">Requested Range Not Satisfiable</div><p>بازه‌ای که برای منبع درخواست شده، نامعتبر بوده یا قابل تأمین نیست.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c4">417</div>
+      <div class="status-body"><div class="name">Expectation Failed</div><p>سرور نتوانسته انتظاری که در هدر Expect آمده بود را برآورده کند.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="s5xx">
+  <div class="section-title"><span class="num">§10</span><h2>Status Codes — 5xx Server Error</h2></div>
+
+  <div class="status-grid">
+    <div class="status-row">
+      <div class="status-code c5">500</div>
+      <div class="status-body"><div class="name">Internal Server Error</div><p>خود سرور به یک خطا خورده و نتوانسته درخواست را سرویس بدهد.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c5">501</div>
+      <div class="status-body"><div class="name">Not Implemented</div><p>درخواست فراتر از توانایی سرور است — مثلاً متدی که سرور اصلاً پشتیبانی نمی‌کند.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c5">502</div>
+      <div class="status-body"><div class="name">Bad Gateway</div><p>سرور به‌عنوان پروکسی یا gateway، پاسخ نامعتبری از حلقه‌ی بعدی زنجیره گرفته است.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c5">503</div>
+      <div class="status-body"><div class="name">Service Unavailable</div><p>سرور فعلاً نمی‌تواند سرویس بدهد، ولی بعداً می‌تواند؛ هدر Retry-After می‌تواند زمان تقریبی را بگوید.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c5">504</div>
+      <div class="status-body"><div class="name">Gateway Timeout</div><p>مثل 408، ولی این‌بار یک gateway یا پروکسی منتظر پاسخ سرور دیگری مانده و تایم‌اوت شده.</p></div>
+    </div>
+    <div class="status-row">
+      <div class="status-code c5">505</div>
+      <div class="status-body"><div class="name">HTTP Version Not Supported</div><p>سرور نسخه‌ای از پروتکل که در درخواست آمده را نمی‌تواند یا نمی‌خواهد پشتیبانی کند.</p></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="heading">Proxies & 5xx</div>
+    <p>پروکسی‌ها وقتی در برقراری ارتباط با سرور دیگری به مشکل می‌خورند، معمولاً همین کدهای 5xx را برای توصیف مشکل صادر می‌کنند.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="headers">
+  <div class="section-title"><span class="num">§11</span><h2>HTTP Headers</h2></div>
+
+  <div class="card">
+    <div class="heading">General Headers</div>
+    <p>هدرهای عمومی که هم تو درخواست هم تو پاسخ استفاده می‌شوند، چون معنیشان فرقی نمی‌کند کی فرستاده باشدشان.</p>
+    <span class="ex mono">Date, Connection, Via, Cache-Control, Upgrade, Trailer</span>
+  </div>
+
+  <div class="card">
+    <div class="heading">Request Headers</div>
+    <p>فقط در درخواست‌ها معنی دارند — اطلاعاتی درباره‌ی اینکه کلاینت کیست و چه چیزی می‌خواهد.</p>
+    <span class="ex mono">Accept, Accept-Language, Accept-Encoding, User-Agent, Referer, Host, Cookie</span>
+    <p class="note">هدرهای Accept دوطرفه سودمندند: کلاینت دقیقاً همان چیزی که می‌خواهد می‌گیرد، سرور هم پهنای باند را برای چیزی که کلاینت نمی‌تواند استفاده کند هدر نمی‌دهد.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">Conditional Request Headers</div>
+    <p>برای گذاشتن یک شرط روی درخواست — مثلاً «فقط اگر از این تاریخ به بعد تغییر کرده، برایم بفرست».</p>
+    <span class="ex mono">If-Modified-Since, If-None-Match, If-Match, If-Range, Range</span>
+  </div>
+
+  <div class="card">
+    <div class="heading">Response Headers</div>
+    <p>اطلاعاتی درباره‌ی سرور یا نحوه‌ی رفتار با پاسخ به کلاینت می‌دهند.</p>
+    <span class="ex mono">Server, Retry-After, Age, Warning, Accept-Ranges, Vary</span>
+  </div>
+
+  <div class="card">
+    <div class="heading">Security Headers</div>
+    <p>مکانیزم چالش/پاسخ برای احراز هویت، به‌علاوه‌ی کوکی‌ها.</p>
+    <span class="ex mono">Authorization, WWW-Authenticate, Cookie, Set-Cookie, Proxy-Authenticate</span>
+  </div>
+
+  <div class="card">
+    <div class="heading">Entity Headers</div>
+    <p>درباره‌ی خود بدنه‌ی پیام (body) صحبت می‌کنند؛ می‌توانند هم در درخواست باشند هم در پاسخ.</p>
+    <span class="ex mono">Content-Type, Content-Length, Content-Encoding, Content-Language, Content-Range, Content-MD5</span>
+    <p class="note">Allow لیست متدهای مجاز روی یک منبع را می‌دهد. Location آدرس واقعی یا جدید منبع را نشان می‌دهد — همان چیزی که در ریدایرکت‌های 301/302 دیدیم.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">ETag</div>
+    <p>یک شناسه‌ی یکتا برای نسخه‌ی فعلی یک منبع. کلاینت بعداً با هدر If-None-Match می‌پرسد «نسخه‌ای که دارم هنوز با این ETag یکی است؟» — دقیق‌تر از If-Modified-Since، چون واقعاً محتوا را چک می‌کند، نه فقط تاریخ را.</p>
+  </div>
+
+  <div class="callout">
+    <div class="heading">Extension Headers</div>
+    <p>هدرهای غیراستاندارد که برنامه‌نویس‌ها خودشان ساخته‌اند ولی هنوز در مشخصات رسمی HTTP نیستند. برنامه‌های HTTP باید بتوانند این هدرها را تحمل کنند و منتقل کنند، حتی اگر معنیشان را نفهمند.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="smuggling">
+  <div class="section-title"><span class="num">§12</span><h2>Connection Desync & Request Smuggling</h2></div>
+
+  <div class="card">
+    <div class="heading">Idempotency</div>
+    <p>یعنی هر بار اجرا کنی، نتیجه یکیه. <span class="mono">GET</span>، <span class="mono">PUT</span>، <span class="mono">DELETE</span> ایدمپوتنت‌اند؛ <span class="mono">POST</span> نیست — برای همینه که مرورگر با ریلود کردن یه صفحه‌ی پرداخت، ازت می‌پرسه «دوباره ارسال بشه؟»</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">Pipelining</div>
+    <p>چند درخواست را بدون منتظر ماندن برای جواب هرکدام، پشت‌سرهم روی یک اتصال می‌فرستی. سریع‌تره، ولی چون پاسخ‌ها هیچ شماره‌ترتیبی ندارند، اگر ترتیب به‌هم بخورد، سرویس‌گیرنده گیج می‌شود — دقیقاً همین بی‌نظمی، زمینه‌ساز حملات بعدی است.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">HTTP Request Smuggling</div>
+    <p>وقتی دو سرور روی یک زنجیره (مثلاً یک پروکسی جلویی و یک سرور اصلی)، سر «این درخواست کجا تمام می‌شود» با هم اختلاف دارند. مهاجم یک تکه داده را در این اختلاف قایم می‌کند تا داخل درخواست بعدیِ یک کاربر دیگر بچسبد — مثل قایم‌کردن یک نامه‌ی دوم داخل پاکتی که رویش نوشته «فقط یک نامه».</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">Desync Attacks</div>
+    <p>نام کلی‌تری برای همین خانواده حمله — یعنی «ناهم‌زمانی» بین دو سرور در تشخیص مرز پیام‌ها. Request Smuggling رایج‌ترین و شناخته‌شده‌ترین نوع Desync است.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">CL.TE</div>
+    <p>فرانت‌اند به هدر <span class="mono">Content-Length</span> اهمیت می‌دهد، بک‌اند به <span class="mono">Transfer-Encoding</span>. فرانت‌اند زودتر از موعد فکر می‌کند پیام تمام شده، در حالی که بک‌اند هنوز منتظر رسیدن قطعه‌ی صفر است.</p>
+  </div>
+
+  <div class="card">
+    <div class="heading">TE.CL</div>
+    <p>دقیقاً برعکس — فرانت‌اند به <span class="mono">Transfer-Encoding</span> اهمیت می‌دهد، بک‌اند به <span class="mono">Content-Length</span>. اینجا فرانت‌اند دیرتر تشخیص می‌دهد پیام تمام شده، در حالی که بک‌اند زودتر بریده و منتظر داده‌ی بعدی می‌ماند.</p>
+  </div>
+
+  <div class="callout">
+    <div class="heading">Why It Matters for Bug Bounty</div>
+    <p>چون سازمان‌های بزرگ معمولاً چند لایه پروکسی/CDN با پیاده‌سازی‌های متفاوت HTTP دارند، همین اختلاف کوچک تفسیر، دریچه‌ی سرقت داده‌ی کاربران دیگر، دور زدن احراز هویت، یا مسموم‌کردن کش را باز می‌کند. تمرین عملی: PortSwigger Web Security Academy، بخش Request Smuggling.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  یادداشت‌های شخصی از HTTP: The Definitive Guide — فصل ۲ و ۳
+</footer>
+
+</body>
+</html>

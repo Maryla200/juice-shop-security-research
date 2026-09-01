@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>JWT — از صفر تا تست عملی</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg: #0b0d10;
+  --bg-panel: #12151a;
+  --line: #262b33;
+  --text: #d7dbe0;
+  --text-dim: #838d99;
+  --red: #ff4d4f;
+  --red-dim: #7a2426;
+  --green: #3fd68a;
+  --blue: #5aa9ff;
+  --amber: #ffb454;
+  --purple: #b784ff;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg); scroll-behavior:smooth;}
+body{
+  font-family:'Vazirmatn', sans-serif;
+  color:var(--text);
+  line-height:1.9;
+  padding:0 0 80px 0;
+}
+.mono{font-family:'JetBrains Mono', monospace; direction:ltr; unicode-bidi:isolate;}
+
+.hero{
+  padding:60px 24px 40px;
+  max-width:940px;
+  margin:0 auto;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.hero-tag{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  display:inline-block;
+  color:var(--red);
+  font-size:13px;
+  letter-spacing:1px;
+  border:1px solid var(--red-dim);
+  background:rgba(255,77,79,0.06);
+  padding:4px 10px;
+  border-radius:4px;
+  margin-bottom:18px;
+}
+.hero h1{
+  font-size:32px;
+  font-weight:800;
+  margin:0 0 10px;
+  color:#fff;
+}
+.hero p{
+  color:var(--text-dim);
+  font-size:16px;
+  max-width:680px;
+  margin:0;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  left:24px; top:60px;
+  width:180px; height:180px;
+  background: radial-gradient(circle, rgba(255,77,79,0.12), transparent 70%);
+  pointer-events:none;
+}
+
+.nav{
+  max-width:940px;
+  margin:24px auto 0;
+  padding:0 24px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  position:sticky;
+  top:0;
+  background:rgba(11,13,16,0.92);
+  backdrop-filter:blur(6px);
+  z-index:10;
+  padding-top:12px;
+  padding-bottom:12px;
+}
+.nav a{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:12px;
+  color:var(--text-dim);
+  text-decoration:none;
+  border:1px solid var(--line);
+  padding:5px 10px;
+  border-radius:20px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.nav a:hover{ color:var(--red); border-color:var(--red-dim); }
+
+main{
+  max-width:940px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+section{ margin-top:56px; scroll-margin-top:70px; }
+
+.section-title{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:22px;
+}
+.section-title .num{
+  font-family:'JetBrains Mono', monospace;
+  color:var(--red-dim);
+  font-size:14px;
+}
+.section-title h2{
+  font-size:20px;
+  font-weight:700;
+  color:#fff;
+  margin:0;
+}
+.section-title span.en{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  color:var(--text-dim);
+  font-size:12.5px;
+  margin-inline-start:6px;
+}
+
+.heading{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  display:inline-block;
+  font-weight:700;
+  color:var(--red);
+  background:rgba(255,77,79,0.08);
+  border:1px solid var(--red-dim);
+  padding:3px 10px;
+  border-radius:5px;
+  font-size:15px;
+  margin-bottom:10px;
+}
+
+.card{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 22px 24px;
+  margin-bottom:16px;
+}
+.card p{ margin:8px 0 0; font-size:15.5px; }
+.card ul, .card ol{ margin:8px 0 0; padding-inline-start:22px; }
+.card li{ margin:4px 0; font-size:15px; }
+
+/* JWT anatomy strip */
+.jwt-strip{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px;
+  font-size:13px;
+  overflow-x:auto;
+  word-break:break-all;
+  margin-bottom:16px;
+  line-height:1.9;
+}
+.jwt-strip .h{ color:var(--red); }
+.jwt-strip .p{ color:var(--amber); }
+.jwt-strip .s{ color:var(--blue); }
+
+.legend{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:12.5px;
+}
+.legend span{ display:flex; align-items:center; gap:6px; color:var(--text-dim); }
+.dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+.dot.h{ background:var(--red); }
+.dot.p{ background:var(--amber); }
+.dot.s{ background:var(--blue); }
+
+pre{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:#0a0c0f;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:12px 14px;
+  overflow-x:auto;
+  font-size:13.5px;
+  color:#c9f5d8;
+  margin:10px 0 0;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-all;
+}
+code.inline{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  unicode-bidi:isolate;
+  background:rgba(255,255,255,0.06);
+  padding:1px 6px;
+  border-radius:4px;
+  font-size:0.92em;
+}
+
+table.ref{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:14.5px;
+}
+table.ref th, table.ref td{
+  text-align:right;
+  padding:10px 12px;
+  border-bottom:1px solid var(--line);
+}
+table.ref th{
+  color:var(--text-dim);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+table.ref td.mono{ font-family:'JetBrains Mono', monospace; direction:ltr; }
+
+.attack-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.attack-row{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:16px 18px;
+}
+.attack-row .name{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-weight:700;
+  color:#fff;
+  font-size:14.5px;
+  margin-bottom:6px;
+  display:block;
+}
+.attack-row p{ margin:0; font-size:14.5px; color:var(--text); }
+
+.status{
+  font-family:'JetBrains Mono', monospace;
+  direction:ltr;
+  font-size:11px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:20px;
+  display:inline-block;
+  margin-bottom:8px;
+}
+.status.found{ background:rgba(255,77,79,0.12); color:var(--red); border:1px solid var(--red-dim); }
+.status.mitigated{ background:rgba(63,214,138,0.12); color:var(--green); border:1px solid rgba(63,214,138,0.3); }
+.status.pending{ background:rgba(255,180,84,0.12); color:var(--amber); border:1px solid rgba(255,180,84,0.35); }
+.status.info{ background:rgba(90,169,255,0.12); color:var(--blue); border:1px solid rgba(90,169,255,0.3); }
+
+.callout{
+  border-radius:8px;
+  padding:14px 18px;
+  margin-top:14px;
+  font-size:14.5px;
+}
+.callout.warn{
+  background:linear-gradient(135deg, rgba(255,180,84,0.12), rgba(255,180,84,0.02));
+  border:1px solid rgba(255,180,84,0.35);
+  color:#ffdca8;
+}
+.callout.result{
+  background:linear-gradient(135deg, rgba(63,214,138,0.10), rgba(63,214,138,0.02));
+  border:1px solid rgba(63,214,138,0.3);
+  color:#c7f5da;
+}
+.callout.info{
+  background:linear-gradient(135deg, rgba(90,169,255,0.10), rgba(90,169,255,0.02));
+  border:1px solid rgba(90,169,255,0.3);
+  color:#cfe6ff;
+}
+.callout b{ color:var(--amber); }
+.callout.result b{ color:var(--green); }
+.callout.info b{ color:var(--blue); }
+
+.divider{
+  border:none;
+  border-top:1px dashed var(--line);
+  margin:56px 0 0;
+}
+
+footer{
+  max-width:940px;
+  margin:64px auto 0;
+  padding:20px 24px 0;
+  border-top:1px solid var(--line);
+  color:var(--text-dim);
+  font-size:13px;
+  text-align:center;
+}
+
+@media (max-width:600px){
+  .hero{padding:48px 18px 32px;}
+  .hero h1{font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="hero-tag">// JWT DEEP DIVE · THEORY + PRACTICE LOG</span>
+  <h1>JWT — از صفر تا تست عملی</h1>
+  <p>ساختار، نحوه‌ی کارکرد، آسیب‌پذیری‌های شناخته‌شده، ابزارهای تخصصی، و مستندسازی تست‌های واقعی انجام‌شده روی OWASP Juice Shop.</p>
+</div>
+
+<div class="nav">
+  <a href="#what">تعریف</a>
+  <a href="#structure">ساختار</a>
+  <a href="#flow">نحوه‌ی کار</a>
+  <a href="#attacks">حملات</a>
+  <a href="#tools">ابزارها</a>
+  <a href="#tests">تست‌های انجام‌شده</a>
+</div>
+
+<main>
+
+<section id="what">
+  <div class="section-title"><span class="num">§1</span><h2>JWT چیست؟</h2><span class="en">What is a JWT</span></div>
+
+  <div class="card">
+    <p><code class="inline">JSON Web Token</code> یک فرمت استاندارد (RFC 7519) برای انتقال داده‌ی JSON، همراه با یک امضای رمزنگاری‌شده، بین دو سیستم است. معمولاً برای حمل «ادعاها» (claims) درباره‌ی هویت کاربر در فرایندهای احراز هویت، مدیریت سشن، و کنترل دسترسی استفاده می‌شود.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">تفاوت کلیدی با سشن‌های کلاسیک</h3>
+    <p>در مدل کلاسیک، سرور یک شناسه‌ی تصادفی کوچک به کلاینت می‌دهد و تمام اطلاعات کاربر را در دیتابیس خودش نگه می‌دارد. در JWT، برعکس است: <b>تمام اطلاعات لازم داخل خود توکن ذخیره می‌شود</b> و سرور فقط کافی‌ست امضا را تأیید کند — بدون نیاز به مراجعه به دیتابیس در هر درخواست. این ویژگی JWT را برای سیستم‌های توزیع‌شده با چند سرور بک‌اند محبوب کرده است.</p>
+    <div class="callout warn"><b>نکته‌ی امنیتی بنیادین:</b> چون همه‌ی داده داخل توکن و به‌صورت خوانا (Base64، نه رمزنگاری‌شده) قرار دارد، تنها چیزی که از دستکاری آن جلوگیری می‌کند «امضا» است. اگر بررسی امضا به هر شکلی ضعیف یا غایب باشد، کل مدل امنیتی فرو می‌ریزد.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="structure">
+  <div class="section-title"><span class="num">§2</span><h2>ساختار یک JWT</h2><span class="en">Anatomy</span></div>
+
+  <div class="legend">
+    <span><i class="dot h"></i> Header</span>
+    <span><i class="dot p"></i> Payload</span>
+    <span><i class="dot s"></i> Signature</span>
+  </div>
+
+  <div class="jwt-strip">
+<span class="h">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9</span>.<span class="p">eyJkYXRhIjp7ImlkIjoyNiwicm9sZSI6ImN1c3RvbWVyIn0sImJpZCI6N30</span>.<span class="s">YLrIXpw-ya9WyYODHMJaAGF1hS-OZhOs8pn_s-lvhAm0</span>
+  </div>
+
+  <table class="ref">
+    <tr><th>بخش</th><th>محتوا</th><th>قابل رمزگشایی توسط</th></tr>
+    <tr><td>Header</td><td>نوع توکن و الگوریتم امضا (مثلاً <span class="mono" style="direction:ltr">RS256</span>)</td><td>هرکسی (فقط Base64URL)</td></tr>
+    <tr><td>Payload</td><td>ادعاها (claims) — مثلاً id، role، bid</td><td>هرکسی (فقط Base64URL)</td></tr>
+    <tr><td>Signature</td><td>اثبات این‌که Header و Payload دستکاری نشده‌اند</td><td>فقط دارنده‌ی کلید مخفی/خصوصی</td></tr>
+  </table>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">روش‌های رمزگشایی</h3>
+    <pre># دستی (ترمینال)
+echo "PAYLOAD_BASE64URL" | tr '_-' '/+' | base64 -d
+
+# آنلاین (فقط برای توکن‌های تمرینی)
+https://jwt.io
+
+# داخل Burp Suite
+Repeater/Proxy → تب JSON Web Token (خودکار تشخیص و decode می‌شود)</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="flow">
+  <div class="section-title"><span class="num">§3</span><h2>نحوه‌ی کارکرد در یک سیستم واقعی</h2><span class="en">Authentication Flow</span></div>
+
+  <div class="card">
+    <ol>
+      <li>کاربر با یوزرنیم/پسورد لاگین می‌کند.</li>
+      <li>سرور هویت را تأیید می‌کند و یک JWT امضاشده می‌سازد (شامل id، role و سایر claims کاربر).</li>
+      <li>کلاینت این توکن را ذخیره می‌کند (در کوکی یا localStorage) و در هر درخواست بعدی، معمولاً در هدر <span class="mono" style="direction:ltr">Authorization: Bearer &lt;token&gt;</span> می‌فرستد.</li>
+      <li>سرور در هر درخواست، فقط <b>امضا</b> را تأیید می‌کند (نه یک جست‌وجوی دیتابیسی) و سپس به claims داخل payload اعتماد می‌کند.</li>
+    </ol>
+    <div class="callout info"><b>نقطه‌ی حساس:</b> مرحله‌ی چهارم دقیقاً همان‌جایی است که اکثر آسیب‌پذیری‌های JWT از آن سرچشمه می‌گیرند — اگر بررسی امضا ضعیف باشد، مهاجم می‌تواند claims (مثل role) را دستکاری کند و سرور بدون تشخیص، به آن اعتماد می‌کند.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="attacks">
+  <div class="section-title"><span class="num">§4</span><h2>حملات شناخته‌شده روی JWT</h2><span class="en">Common Attack Classes</span></div>
+
+  <div class="attack-grid">
+    <div class="attack-row">
+      <span class="name">'none' Algorithm</span>
+      <p>استاندارد JWT اجازه می‌دهد الگوریتم امضا برابر <span class="mono" style="direction:ltr">none</span> باشد (یعنی بدون امضا). اگر پیاده‌سازی سرور این حالت را قبول کند، می‌توان هر محتوایی را بدون نیاز به کلید، در payload گذاشت.</p>
+    </div>
+    <div class="attack-row">
+      <span class="name">HMAC Key Confusion (alg confusion)</span>
+      <p>وقتی سرور از الگوریتم نامتقارن (RS256، با کلید عمومی/خصوصی) استفاده می‌کند، اما مهاجم الگوریتم را به HS256 (متقارن) تغییر می‌دهد و از همان کلید عمومی (که در دسترس همه است) به‌عنوان کلید امضا استفاده می‌کند. اگر سرور به‌اشتباه همان کلید را برای تأیید HS256 به کار ببرد، امضای جعلی پذیرفته می‌شود.</p>
+    </div>
+    <div class="attack-row">
+      <span class="name">Embedded JWK Injection</span>
+      <p>برخی پیاده‌سازی‌ها اجازه می‌دهند خود کلید عمومی داخل هدر توکن (claim به نام jwk) جاسازی شود. اگر سرور منشأ این کلید را بررسی نکند، مهاجم می‌تواند کلید خودش را جاسازی و توکن را با آن امضا کند.</p>
+    </div>
+    <div class="attack-row">
+      <span class="name">Weak Signing Key</span>
+      <p>اگر کلید مخفی HMAC ضعیف یا پیش‌فرض باشد (مثل secret یا changeme)، می‌توان با یک wordlist از کلیدهای رایج آن را Brute-force کرد.</p>
+    </div>
+    <div class="attack-row">
+      <span class="name">kid Header Injection</span>
+      <p>هدر kid (Key ID) به سرور می‌گوید کدام کلید را برای تأیید امضا استفاده کند. اگر این مقدار بدون پاک‌سازی مستقیم در یک مسیر فایل یا کوئری دیتابیس استفاده شود، می‌تواند به Path Traversal یا SQL Injection منتهی شود.</p>
+    </div>
+    <div class="attack-row">
+      <span class="name">jku / x5u Header Abuse</span>
+      <p>این هدرها به سرور می‌گویند کلید عمومی را از یک URL خارجی بگیرد. اگر سرور بدون بررسی به هر آدرسی وصل شود، مهاجم می‌تواند یک سرور کنترل‌شده معرفی کند (هم برای جعل کلید، هم برای شناسایی SSRF).</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="tools">
+  <div class="section-title"><span class="num">§5</span><h2>ابزارهای تخصصی</h2><span class="en">Toolkit</span></div>
+
+  <table class="ref">
+    <tr><th>ابزار</th><th>کاربرد</th></tr>
+    <tr><td class="mono">jwt.io</td><td>رمزگشایی سریع آنلاین (فقط توکن‌های تمرینی)</td></tr>
+    <tr><td class="mono">jwt_tool (ticarpi)</td><td>اسکن خودکار آسیب‌پذیری‌های شناخته‌شده، جعل و دستکاری توکن</td></tr>
+    <tr><td class="mono">hashcat</td><td>Brute-force کلید مخفی HMAC با wordlist (mode 16500)</td></tr>
+    <tr><td class="mono">jwt-hack</td><td>تست حمله‌های alg confusion، kid injection، claim tampering</td></tr>
+    <tr><td class="mono">JWT Editor (Burp Extension)</td><td>دستکاری، امضای مجدد و اجرای حملات شناخته‌شده مستقیم داخل Burp</td></tr>
+    <tr><td class="mono">wallarm/jwt-secrets</td><td>Wordlist از کلیدهای HMAC رایج و ضعیف، برای استفاده با hashcat یا jwt_tool</td></tr>
+  </table>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">نمونه دستورات</h3>
+    <pre># اسکن خودکار با jwt_tool
+python3 jwt_tool.py &lt;TOKEN&gt; -M pb
+
+# Brute-force کلید مخفی با jwt_tool
+python3 jwt_tool.py &lt;TOKEN&gt; -C -d jwt.secrets.list
+
+# Brute-force با hashcat
+hashcat -a 0 -m 16500 jwt.txt jwt.secrets.list</pre>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="tests">
+  <div class="section-title"><span class="num">§6</span><h2>تست‌های عملی انجام‌شده روی Juice Shop</h2><span class="en">Practical Testing Log</span></div>
+
+  <div class="card">
+    <span class="status info">METHOD</span>
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">استخراج و رمزگشایی Payload</h3>
+    <p>با رمزگشایی دستی بخش Payload توکن واقعی، فیلد <code class="inline">bid</code> (Basket ID) شناسایی شد که مستقیماً به‌عنوان شناسه‌ی سبد خرید کاربر در API استفاده می‌شود — این یافته پایه‌ی تست IDOR در بخش دیگر گزارش شد.</p>
+    <pre>{
+  "data": { "id": 26, "role": "customer", ... },
+  "bid": 7,
+  "iat": 1787247421
+}</pre>
+  </div>
+
+  <div class="card">
+    <span class="status mitigated">MITIGATED</span>
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">تست اعتبار امضا (روی change-password)</h3>
+    <p>با حذف هدر Authorization و جداگانه با دستکاری امضای JWT، سرور در هر دو حالت با خطا پاسخ داد — اما از دو خط متفاوت در کد (بر اساس Stack Trace)، که نشان می‌دهد سرور هم وجود هدر و هم صحت امضا را به‌طور جداگانه بررسی می‌کند. این endpoint خاص در برابر دستکاری ساده‌ی JWT مقاوم است.</p>
+  </div>
+
+  <div class="card">
+    <span class="status found">FOUND</span>
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">تست الگوریتم 'none'</h3>
+    <p>الگوریتم توکن به <code class="inline">none</code> تغییر یافت و امضا حذف شد؛ درخواست به یک endpoint محافظت‌شده ارسال شد.</p>
+    <div class="callout warn"><b>نتیجه:</b> سرور با کد <code class="inline">500 Internal Server Error</code> پاسخ داد، همراه با یک Stack Trace کامل — یعنی به‌جای رد مودبانه‌ی توکن نامعتبر (401/403)، اپلیکیشن کرش کرد. این یک نمونه‌ی دیگر از آسیب‌پذیری Information Disclosure (مستندشده در گزارش اصلی) است، این‌بار از یک نقطه‌ی متفاوت در کد.</div>
+  </div>
+
+  <div class="card">
+    <span class="status pending">INCONCLUSIVE — NEEDS BASELINE</span>
+    <h3 style="margin:0 0 8px; color:#fff; font-size:15px;">تست HMAC Key Confusion</h3>
+    <p>الگوریتم از RS256 به HS256 تغییر یافت و توکن با یک مقدار جایگزین امضا شد. درخواست به <code class="inline">GET /rest/continue-code</code> ارسال شد و پاسخ <code class="inline">200 OK</code> بدون محتوای معنادار دریافت شد.</p>
+    <div class="callout warn"><b>چرا نتیجه هنوز قطعی نیست:</b> این endpoint احتمالاً برای بازیابی سبد مهمان طراحی شده و ممکن است اساساً بدون نیاز به بررسی دقیق توکن، پاسخ 200 بدهد. برای تأیید واقعی حمله، لازم است:
+    <br>۱. یک baseline با یک توکن کاملاً نامعتبر (garbage) روی همان endpoint گرفته شود.
+    <br>۲. در صورت یکسان بودن نتیجه، حمله روی یک endpoint حساس‌تر (مثل basket API یا مسیرهای ادمین) با محتوای واقعی تکرار شود.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  یادداشت شخصی — JWT: تئوری، آسیب‌پذیری‌ها و تست عملی روی OWASP Juice Shop
+</footer>
+
+</body>
+</html>
