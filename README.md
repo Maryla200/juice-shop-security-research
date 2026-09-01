@@ -1,27 +1,38 @@
-# Security Research Notes
+# 🔐 Security Research Notes
 
-مستندات و گزارش‌های شخصی من از یادگیری وب سکیوریتی و باگ‌بانتی.
+مستندات و گزارش‌های شخصی من از یادگیری وب سکیوریتی و باگ‌بانتی. این ریپو بیشتر جنبه‌ی دفترچه‌ی یادگیری داره تا گزارش رسمی — بیشتر برای مستندسازی روند کار و مرور خودم هست.
 
-این ریپو بیشتر جنبه‌ی دفترچه‌ی یادگیری داره تا گزارش رسمی-یشتر برای مستندسازی روند کار هست.
+> ⚠️ **Disclaimer**
+> تمام تست‌ها و تحلیل‌های این مستندات روی محیط آزمایشگاهی محلی (Kali Linux, VMware) و اپلیکیشن عمداً آسیب‌پذیر [OWASP Juice Shop](https://github.com/juice-shop/juice-shop) انجام شده‌اند. هیچ سیستم واقعی یا متعلق به شخص ثالث تست نشده است. این محتوا صرفاً برای یادگیری و مستندسازی شخصی تهیه شده.
 
-## فهرست
+---
 
-- `kali_disk_expansion_guide.html` — راهنمای افزایش فضای دیسک در کالی لینوکس
-- `vmware-disk-lock-troubleshooting.html` — رفع خطای قفل شدن دیسک در VMware
-- `sql-injection-login-admin.html` — دور زدن لاگین ادمین با SQL Injection
-- `sql-injection-crack-md5.html` — استخراج و کرک هش MD5 از طریق SQL Injection
-- `hashcat-errors-report.html` — خطاها و راه‌حل‌های ابزار hashcat
-- `password-hash-cracking.html` — مفاهیم هش پسورد و روش‌های کرک
-- `totp-secret-explained.html` — مفهوم و کاربرد TOTP Secret
-- `apt-lock-challenge.html` — چالش قفل APT
-- `security-test-findings.html` — یافته‌های تست امنیتی روی OWASP Juice Shop
-- `Full-Journey-Admin-SQLi-Report_html.html` — گزارش کامل مسیر نفوذ به پنل ادمین از طریق SQLi
-- `jwt_deep_dive_1_.html` — بررسی عمیق JWT و تست عملی
-- `http_url.html` — مرجع URL و HTTP
-- `juice_shop_findings_public.html` — یافته‌های تست امنیتی روی Juice Shop (نسخه‌ی خلاصه)
+## 📑 فهرست گزارش‌ها
 
-## هدف
+| گزارش | توضیح |
+|---|---|
+| [🛡️ یافته‌های تست امنیتی — Juice Shop](https://maryla200.github.io/juice-shop-security-research/security-test-findings.html) | مستندسازی کامل ۸ تست دستی روی Juice Shop: CSRF، Information Disclosure، IDOR، Clickjacking، Directory Traversal و بای‌پس کامل احراز هویت با JWT Algorithm None |
+| [⚡ SQL Injection](https://maryla200.github.io/juice-shop-security-research/sql-injection.html) | دور زدن لاگین ادمین و استخراج/کرک هش پسورد از طریق SQL Injection |
+| [🔑 JWT Deep Dive](https://maryla200.github.io/juice-shop-security-research/jwt_deep_dive.html) | بررسی عمیق ساختار JWT، رمزگشایی Payload و تست عملی روی توکن‌ها |
+| [📟 TOTP Secret](https://maryla200.github.io/juice-shop-security-research/totp-secret-explained.html) | مفهوم و کاربرد TOTP Secret در احراز هویت دومرحله‌ای |
+| [🔓 Password Hash Cracking](https://maryla200.github.io/juice-shop-security-research/password-hash-cracking.html) | مفاهیم هش پسورد و روش‌های کرک آن |
+| [⚙️ Hashcat Errors Report](https://maryla200.github.io/juice-shop-security-research/hashcat-errors-report.html) | خطاها و راه‌حل‌های عملی هنگام کار با ابزار hashcat |
+| [🌐 HTTP & URL Reference](https://maryla200.github.io/juice-shop-security-research/http%26url.html) | مرجع مفاهیم HTTP و ساختار URL |
+| [📦 Juice Shop Findings (Public)](https://maryla200.github.io/juice-shop-security-research/juice_shop_findings_public.html) | نسخه‌ی خلاصه‌شده‌ی یافته‌های تست روی Juice Shop |
+| [🧩 APT Lock Challenge](https://maryla200.github.io/juice-shop-security-research/apt-lock-challenge.html) | عیب‌یابی و حل چالش قفل شدن APT در محیط Kali |
+| [🖥️ Kali Disk Expansion Guide](https://maryla200.github.io/juice-shop-security-research/kali_disk_expansion_guide.html) | راهنمای افزایش فضای دیسک ماشین مجازی کالی لینوکس |
+| [💽 VMware Disk Lock Troubleshooting](https://maryla200.github.io/juice-shop-security-research/vmware-disk-lock-troubleshooting.html) | عیب‌یابی و رفع خطای قفل شدن دیسک در VMware |
 
-یادداشت‌برداری شخصی در مسیر یادگیری pentesting و باگ‌بانتی، شامل تحلیل آسیب‌پذیری‌ها، عیب‌یابی محیط آزمایشگاهی (Kali/VMware) و تمرین روی پلتفرم‌های آموزشی مثل OWASP Juice Shop.
+---
 
-این محتوا برای اهداف آموزشی و مستندسازی شخصی تهیه شده و به هیچ سیستم یا سازمان واقعی خارج از محیط آزمایشگاهی مربوط نیست.
+## 🎯 هدف
+
+یادداشت‌برداری شخصی در مسیر یادگیری pentesting و باگ‌بانتیه — شامل تحلیل آسیب‌پذیری‌های وب (OWASP Top 10)، عیب‌یابی محیط آزمایشگاهی (Kali / VMware)، و تمرین عملی روی پلتفرم‌های آموزشی مثل OWASP Juice Shop.
+
+## 🧰 ابزارهای استفاده‌شده
+
+`Burp Suite` · `DevTools` · `hashcat` · `sqlmap concepts` · `jwt.io` · `crackstation` · `Kali Linux` · `VMware Workstation`
+
+---
+
+**نکته:** این ریپو در حال حاضر **Private** است. پیش از تغییر visibility به Public یا اضافه کردن اسکرین‌شات، محتوای فایل‌ها از نظر اطلاعات شناسایی‌کننده (IP، مسیر فایل شخصی، نام کاربری و…) دوباره بازبینی شود.
